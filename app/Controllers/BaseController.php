@@ -28,12 +28,14 @@ abstract class BaseController extends Controller
      */
     protected $request;
 
+    protected $router;
+
     /**
      * An array of helpers to be loaded automatically upon
      * class instantiation. These helpers will be available
      * to all other controllers that extend BaseController.
      *
-     * @var list<string>
+     * @var array
      */
     protected $helpers = [];
 
@@ -41,7 +43,50 @@ abstract class BaseController extends Controller
      * Be sure to declare properties for any property fetch you initialized.
      * The creation of dynamic property is deprecated in PHP 8.2.
      */
-    // protected $session;
+    protected $session;
+    protected $start_session = true;
+
+
+
+    protected $require_auth = true;
+
+
+    /**
+     * Page Title
+     *
+     * $title : title on the paghe
+     * $title_prefix : automaticaly prefix added
+     */
+    protected $title = 'Home';
+
+    protected $title_prefix = 'V17Mag';
+
+    /**
+     * Menu Management
+     */
+    protected $menus;
+
+    protected $breadcrumb = [];
+    protected $menu       = 'accueil';
+    protected $mainmenu;
+
+    /**
+     * Messaging
+     * messages : list of message to display
+     * toastr : use js toaster to display messages
+     */
+    protected $messages = [];
+
+    protected $toastr = true;
+
+    protected function menus()
+    {
+        if (! $this->menus) {
+            $this->menus = json_decode(file_get_contents(APPPATH . 'Menus/admin.json'), true);
+        }
+
+        return $this->menus;
+    }
 
     /**
      * @return void
@@ -53,6 +98,117 @@ abstract class BaseController extends Controller
 
         // Preload any models, libraries, etc, here.
 
-        // E.g.: $this->session = \Config\Services::session();
+        if ($this->start_session){
+            log_message('debug','start session');
+            $this->session = session();
+            if (session()->has('messages')) {
+                $this->messages = session()->get('messages');
+                session()->remove('messages');
+            }
+        }
+        $this->router  = service('router');
+
+        // Vérifier l'authentification si nécessaire
+        if ($this->require_auth) {
+            $this->checkLogin();
+        }
+    }
+
+    /**
+     * Check if the user is authenticated.
+     */
+    protected function checkLogin($redirect = true)
+    {
+        if (!isset($this->session->user)) {
+            if ($redirect) {
+                $this->session->set('redirect_url', current_url(true)->getPath()); // Save the current URL for redirection after login
+                return $this->redirect('/Login');
+            }
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Redirection
+     * redirect to the page, every path component can be passed as au parameters
+     * ex: $this->redirect('controller','methoid','param1', 'param2')
+     *  => /controller/method/param1/param2
+     */
+    public function redirect()
+    {
+        $url = implode('/', func_get_args());
+        $url = base_url($url); // Utiliser base_url pour inclure le sous-dossier
+        if (count($this->messages) > 0) {
+            session()->set('messages', $this->messages);
+        }
+        header("Location: {$url}");
+
+        exit; /** @phpstan-ignore-line */
+    }
+    /**
+     * View
+     * Efficient view system
+     *
+     * @param string|null $vue
+     * @param array|null  $datas
+     */
+    public function view($vue = null, $datas = [], $admin = false)
+    {
+        $connected = isset($this->session->user);
+        $template_dir = ($admin) ? "/templates/admin/" : "/templates/front/";
+        return view(
+                $template_dir . 'head',
+                [
+                    'template_dir'   => $template_dir,
+                    'show_menu'  => $connected,
+                    'mainmenu'   => $this->mainmenu,
+                    'breadcrumb' => $this->breadcrumb,
+                    'localmenu'  => $this->menu,
+                    'user'       => ($this->session->user ?? null),
+                    'menus'      => $this->menus(),
+                    'title'      => sprintf(
+                        '%s : %s',
+                        $this->title,
+                        $this->title_prefix
+                    )]
+            )
+            . (($vue !== null) ? view($vue, $datas) : '')
+            . view($template_dir . 'footer', ['messages' => $this->messages]);
+    }
+
+    public function success($txt)
+    {
+        log_message('debug', $txt);
+        $this->messages[] = ['txt' => $txt, 'class' => 'alert-success', 'toast' => 'success'];
+    }
+
+    public function message($txt)
+    {
+        log_message('debug', $txt);
+        $this->messages[] = ['txt' => $txt, 'class' => 'alert-info', 'toast' => 'info'];
+    }
+
+    public function warning($txt)
+    {
+        log_message('debug', $txt);
+        $this->messages[] = ['txt' => $txt, 'class' => 'alert-warning', 'toast' => 'warning'];
+    }
+
+    public function error($txt)
+    {
+        log_message('debug', $txt);
+        $this->messages[] = ['txt' => $txt, 'class' => 'alert-danger', 'toast' => 'error'];
+    }
+    protected function addBreadcrumb($text, $url, $info = '')
+    {
+        if ($this->breadcrumb === null) {
+            $this->breadcrumb = [];
+        }
+        $this->breadcrumb[] = [
+            'text' => $text,
+            'url'  => (is_array($url) ? '/' . implode('/', $url) : $url),
+            'info' => $info,
+        ];
     }
 }
