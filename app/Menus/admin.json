@@ -1,7 +1,7 @@
 {
   "accueil": {
-    "title": "Accueil",
-    "url": "/",
+    "title": "Tableau de Bord",
+    "url": "/admin",
     "perm": "none",
     "icon": "<i class=\"nav-icon fa-solid fa-house\"></i>",
     "class": "main-menu-accueil"

@@ -101,9 +101,9 @@ abstract class BaseController extends Controller
         if ($this->start_session){
             log_message('debug','start session');
             $this->session = session();
+            // Use flashdata for messages
             if (session()->has('messages')) {
-                $this->messages = session()->get('messages');
-                session()->remove('messages');
+                $this->messages = session()->getFlashdata('messages');
             }
         }
         $this->router  = service('router');
@@ -122,11 +122,23 @@ abstract class BaseController extends Controller
         if (!isset($this->session->user)) {
             if ($redirect) {
                 $this->session->set('redirect_url', current_url(true)->getPath()); // Save the current URL for redirection after login
-                return $this->redirect('/Login');
+                return $this->redirect('/login');
             }
             return false;
         }
         return true;
+    }
+
+    public function logout()
+    {
+        if (isset($this->session->user)) {
+            $this->session->remove('user');
+        }
+
+        $this->success('Déconnexion réussie.');
+
+        // Rediriger l'utilisateur vers la page de connexion ou une autre page
+        return $this->redirect('/login');
     }
 
     /**
@@ -135,15 +147,21 @@ abstract class BaseController extends Controller
      * ex: $this->redirect('controller','methoid','param1', 'param2')
      *  => /controller/method/param1/param2
      */
-    public function redirect()
+    public function redirect(string $url, array $data = [])
     {
-        $url = implode('/', func_get_args());
-        $url = base_url($url); // Utiliser base_url pour inclure le sous-dossier
+        //$url = implode('/', array_slice(func_get_args(), 1));
+        $url = base_url($url);
+
+        // Store messages in flashdata
         if (count($this->messages) > 0) {
-            session()->set('messages', $this->messages);
+            session()->setFlashdata('messages', $this->messages);
+        }
+
+        // Store additional data in flashdata
+        if (!empty($data)) {
+            session()->setFlashdata('data', $data);
         }
         header("Location: {$url}");
-
         exit; /** @phpstan-ignore-line */
     }
     /**
@@ -157,25 +175,29 @@ abstract class BaseController extends Controller
     {
         $connected = isset($this->session->user);
         $template_dir = ($admin) ? "/templates/admin/" : "/templates/front/";
+
+        // Merge flashdata with existing $datas
+        $flashData = session()->getFlashdata('data');
+        if ($flashData) {
+            $datas = array_merge($datas, $flashData);
+        }
         return view(
                 $template_dir . 'head',
                 [
-                    'template_dir'   => $template_dir,
-                    'show_menu'  => $connected,
-                    'mainmenu'   => $this->mainmenu,
+                    'template_dir' => $template_dir,
+                    'show_menu' => $connected,
+                    'mainmenu' => $this->mainmenu,
                     'breadcrumb' => $this->breadcrumb,
-                    'localmenu'  => $this->menu,
-                    'user'       => ($this->session->user ?? null),
-                    'menus'      => $this->menus(),
-                    'title'      => sprintf(
-                        '%s : %s',
-                        $this->title,
-                        $this->title_prefix
-                    )]
+                    'localmenu' => $this->menu,
+                    'user' => ($this->session->user ?? null),
+                    'menus' => $this->menus(),
+                    'title' => sprintf('%s : %s', $this->title, $this->title_prefix)
+                ]
             )
             . (($vue !== null) ? view($vue, $datas) : '')
             . view($template_dir . 'footer', ['messages' => $this->messages]);
     }
+
 
     public function success($txt)
     {
