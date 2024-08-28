@@ -1,0 +1,112 @@
+<?php
+
+namespace App\Models;
+
+use CodeIgniter\Model;
+
+class UserModel extends Model
+{
+    protected $table = 'TableUser';
+    protected $primaryKey = 'id';
+
+    // Champs permis pour les opérations d'insertion et de mise à jour
+    protected $allowedFields = ['username', 'email', 'password', 'id_permission', 'created_at', 'updated_at', 'deleted_at'];
+
+    // Activer le soft delete
+    protected $useSoftDeletes = true;
+
+    // Champs de gestion des dates
+    protected $useTimestamps = true;
+    protected $createdField  = 'created_at';
+    protected $updatedField  = 'updated_at';
+    protected $deletedField  = 'deleted_at';
+
+    // Validation
+    protected $validationRules = [
+        'username' => 'required|min_length[3]|max_length[100]',
+        'email'    => 'required|valid_email|is_unique[TableUser.email,id,{id}]',
+        'password' => 'required|min_length[8]',
+        'id_permission' => 'required|is_natural_no_zero',
+    ];
+
+    protected $validationMessages = [
+        'username' => [
+            'required'   => 'Le nom d\'utilisateur est requis.',
+            'min_length' => 'Le nom d\'utilisateur doit comporter au moins 3 caractères.',
+            'max_length' => 'Le nom d\'utilisateur ne doit pas dépasser 100 caractères.',
+        ],
+        'email' => [
+            'required'   => 'L\'email est requis.',
+            'valid_email' => 'L\'email doit être valide.',
+            'is_unique'   => 'Cet email est déjà utilisé.',
+        ],
+        'password' => [
+            'required'   => 'Le mot de passe est requis.',
+            'min_length' => 'Le mot de passe doit comporter au moins 8 caractères.',
+        ],
+        'id_permission' => [
+            'required'          => 'La permission est requise.',
+            'is_natural_no_zero' => 'La permission doit être un entier positif.',
+        ],
+    ];
+
+    // Callbacks pour le hachage du mot de passe
+    protected $beforeInsert = ['hashPassword'];
+    protected $beforeUpdate = ['hashPassword'];
+
+    protected function hashPassword(array $data)
+    {
+        if (!isset($data['data']['password'])) {
+            return $data;
+        }
+
+        $data['data']['password'] = password_hash($data['data']['password'], PASSWORD_DEFAULT);
+        return $data;
+    }
+
+    // Relations avec les permissions
+    public function getPermissions()
+    {
+        return $this->join('TableUserPermission', 'TableUser.id_permission = TableUserPermission.id')
+            ->select('TableUser.*, TableUserPermission.name as permission_name')
+            ->findAll();
+    }
+
+    public function getUserById($id)
+    {
+        return $this->find($id);
+    }
+
+    public function getAllUsers()
+    {
+        return $this->findAll();
+    }
+
+    public function createUser($data)
+    {
+        return $this->insert($data);
+    }
+    public function updateUser($id, $data)
+    {
+        return $this->update($id, $data);
+    }
+    public function deleteUser($id)
+    {
+        return $this->delete($id);
+    }
+    public function verifyLogin($email, $password)
+    {
+        // Rechercher l'utilisateur par email
+        $user = $this->where('email', $email)->first();
+
+        // Si l'utilisateur existe, vérifier le mot de passe
+        if ($user && password_verify($password, $user['password'])) {
+            // Le mot de passe est correct, retourner les informations de l'utilisateur
+            return $user;
+        }
+
+        // Si l'utilisateur n'existe pas ou si le mot de passe est incorrect, retourner false
+        return false;
+    }
+
+}

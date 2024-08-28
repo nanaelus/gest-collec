@@ -1,0 +1,43 @@
+{
+  "accueil": {
+    "title": "Tableau de Bord",
+    "url": "/admin",
+    "perm": "none",
+    "icon": "<i class=\"nav-icon fa-solid fa-house\"></i>",
+    "class": "main-menu-accueil"
+  },
+  "produits": {
+    "title": "Produits",
+    "url": "/Product",
+    "perm": "none",
+    "icon": "<i class=\"nav-icon fas fa-file-invoice-dollar\"></i>",
+    "class": "",
+    "subs": {
+      "search": {
+        "title": "Rechercher un produit",
+        "url": "/Product/search",
+        "icon": "<i class=\"nav-icon fas fa-magnifying-glass\"></i>"
+      },
+      "newproduct": {
+        "title": "Nouveau Produit",
+        "url": "/Product/new",
+        "icon": "<i class=\"nav-icon fas fa-file-circle-plus\"></i>"
+      },
+      "imports": {
+        "title": "Import en masse",
+        "url": "/Imports/",
+        "icon": "<i class=\"nav-icon fas fa-download\"></i>"
+      },
+      "export": {
+        "title": "Export",
+        "url": "/Product/export",
+        "icon": "<i class=\"nav-icon fas fa-upload\"></i>"
+      },
+      "prices": {
+        "title": "Tarifs Pro",
+        "url": "/Prices/",
+        "icon": "<i class=\"nav-icon fas fa-euro\"></i>"
+      }
+    }
+  }
+}
