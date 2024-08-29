@@ -33,7 +33,7 @@
             }} ?>
 
         <li class="nav-item mt-auto">
-            <a class="nav-link" href="/Login/out">
+            <a class="nav-link" href="/login/logout">
                 <svg class="nav-icon me-2">
                     <use xlink:href="/vendors/@coreui/icons/svg/free.svg#cil-account-logout"></use>
                 </svg> Déconnexion</a>

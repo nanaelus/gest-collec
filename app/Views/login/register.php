@@ -68,13 +68,6 @@
 <body>
 <div class="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
     <div class="container">
-        <?php $flashData = session()->getFlashdata('data'); ?>
-        <?php if ($flashData) { ?>
-            <p>Flashdata trouvée :</p>
-            <pre><?php print_r($flashData); ?></pre>
-        <?php } else { ?>
-            <p>Aucune flashdata trouvée.</p>
-        <?php } ?>
         <?php if (isset($errors)) { ?>
             <div class="row justify-content-center">
                 <div class="col-md-5">

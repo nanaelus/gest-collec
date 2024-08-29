@@ -1,25 +1,30 @@
 {
   "accueil": {
     "title": "Tableau de Bord",
-    "url": "/admin",
+    "url": "/admin/dashboard",
     "perm": "none",
     "icon": "<i class=\"nav-icon fa-solid fa-house\"></i>",
     "class": "main-menu-accueil"
   },
-  "produits": {
-    "title": "Produits",
-    "url": "/Product",
+  "administration": {
+    "title": "Administration",
+    "url": "/",
     "perm": "none",
     "icon": "<i class=\"nav-icon fas fa-file-invoice-dollar\"></i>",
     "class": "",
     "subs": {
-      "search": {
-        "title": "Rechercher un produit",
-        "url": "/Product/search",
-        "icon": "<i class=\"nav-icon fas fa-magnifying-glass\"></i>"
+      "user": {
+        "title": "Utilisateurs",
+        "url": "/admin/user",
+        "icon": "<i class=\"nav-icon fas fa-user\"></i>"
+      },
+      "animals": {
+        "title": "Animaux",
+        "url" : "/admin/user",
+        "icon": "<i class=\"nav-icon fas fa-otter\"></i>"
       },
       "newproduct": {
-        "title": "Nouveau Produit",
+        "title": "Nouvel utilisateur",
         "url": "/Product/new",
         "icon": "<i class=\"nav-icon fas fa-file-circle-plus\"></i>"
       },
