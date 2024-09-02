@@ -10,7 +10,9 @@ class Dashboard extends BaseController
     protected $require_auth = true;
     public function getindex(): string
     {
-        return $this->view('/admin/dashboard/index.php', [], true);
+        $um = Model('App\Models\UserModel');
+        $infosUser= $um->countUserByPermission();
+        return $this->view('/admin/dashboard/index.php', ['infosUser' => $infosUser], true);
     }
 
     public function gettest() {
@@ -20,5 +22,9 @@ class Dashboard extends BaseController
         $this->warning("Oh");
         $this->error("Oh");
         $this->redirect("/admin/dashboard");
+    }
+    public function gettest2() {
+        $um = Model('App\Models\UserModel');
+        print_r($um->countUserByPermission());
     }
 }

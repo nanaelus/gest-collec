@@ -19,29 +19,9 @@
         "icon": "<i class=\"nav-icon fas fa-user\"></i>"
       },
       "animals": {
-        "title": "Animaux",
-        "url" : "/admin/user",
+        "title": "Role",
+        "url" : "/admin/userpermission",
         "icon": "<i class=\"nav-icon fas fa-otter\"></i>"
-      },
-      "newproduct": {
-        "title": "Nouvel utilisateur",
-        "url": "/Product/new",
-        "icon": "<i class=\"nav-icon fas fa-file-circle-plus\"></i>"
-      },
-      "imports": {
-        "title": "Import en masse",
-        "url": "/Imports/",
-        "icon": "<i class=\"nav-icon fas fa-download\"></i>"
-      },
-      "export": {
-        "title": "Export",
-        "url": "/Product/export",
-        "icon": "<i class=\"nav-icon fas fa-upload\"></i>"
-      },
-      "prices": {
-        "title": "Tarifs Pro",
-        "url": "/Prices/",
-        "icon": "<i class=\"nav-icon fas fa-euro\"></i>"
       }
     }
   }

@@ -37,4 +37,23 @@ class UserPermissionModel extends Model
     {
         return $this->findAll();
     }
+
+    public function getRole($id)
+    {
+        return $this->find($id);
+    }
+
+    public function updatePermission($id, $data) {
+        $builder = $this->builder();
+        $builder->where('id', $id);
+        return $builder->update($data);
+    }
+
+    public function createPermission($data)
+    {
+        return $this->insert($data);
+    }
+    public function deletePermission($id) {
+        return $this->delete($id);
+    }
 }

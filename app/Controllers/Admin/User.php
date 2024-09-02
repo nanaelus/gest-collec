@@ -13,9 +13,12 @@ class User extends BaseController
             $users = $um->getPermissions();
             return $this->view("/admin/user/index.php",['users' => $users], true);
         } else {
+            $permissions = Model("UserPermissionModel")->getAllPermissions();
+            if($id == "new") {
+                return $this->view("/admin/user/user",['permissions' => $permissions], true);
+            }
             $utilisateur = $um->getUserById($id);
             if ($utilisateur) {
-                $permissions = Model("UserPermissionModel")->getAllPermissions();
                 return $this->view("/admin/user/user", ["utilisateur" => $utilisateur, "permissions" => $permissions ], true);
             } else {
                 $this->error("L'ID de l'utilisateur n'existe pas");
@@ -31,6 +34,32 @@ class User extends BaseController
             $this->success("Utilisateur à bien été modifié");
         } else {
             $this->error("Une erreur est survenue");
+        }
+        $this->redirect("/admin/user");
+    }
+
+    public function postcreate() {
+        $data = $this->request->getPost();
+        $um = Model("UserModel");
+        if ($um->createUser($data)) {
+            $this->success("L'utilisateur à bien été ajouté");
+            $this->redirect("/admin/user");
+        } else {
+            $errors = $um->errors();
+            foreach ($errors as $error)
+            {
+            $this->error($error);
+            }
+            $this->redirect("/admin/user/new");
+        }
+    }
+
+    public function getdelete($id) {
+        $um = Model('UserModel');
+        if($um->deleteUser($id)) {
+            $this->success("Utilisateur supprimé avec succès");
+        } else {
+            $this->error("Utilisateur non supprimé");
         }
         $this->redirect("/admin/user");
     }

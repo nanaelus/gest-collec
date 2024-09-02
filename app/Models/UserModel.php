@@ -103,6 +103,14 @@ class UserModel extends Model
     {
         return $this->delete($id);
     }
+
+    public function countUserByPermission() {
+        $builder = $this->db->table('TableUser U');
+        $builder->select('UP.name, count(U.id) as count');
+        $builder->join('TableUserPermission UP', 'U.id_permission=UP.id');
+        $builder->groupBy('U.id_permission');
+        return $builder->get()->getResultArray();
+    }
     public function verifyLogin($email, $password)
     {
         // Rechercher l'utilisateur par email
