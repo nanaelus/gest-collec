@@ -35,6 +35,7 @@
 
 
     <!-- Javascript -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
     <script src="<?= base_url('/js/jquery-3.7.1.min.js') ?>"></script>
     <script src="<?= base_url('/js/config.js') ?>"></script>
     <script src="<?= base_url('/js/color-modes.js') ?>"></script>

@@ -15,6 +15,8 @@
                                 <th>Username</th>
                                 <th>Mail</th>
                                 <th>Rôle</th>
+                                <th>Actif</th>
+                                <th></th>
                                 <th></th>
                             </tr>
                             </thead>
@@ -41,11 +43,23 @@
                                         {"data": "username"},
                                         {"data": "email"},
                                         {"data": "permission_name"},
+                                        {"data" : "deleted_at",
+                                            render : function(data) {
+                                                return (data === null ? "<i class='fa-solid fa-circle-check text-success'></i>" : "<i class='fa-solid fa-circle-xmark text-danger'></i>");
+                                            }
+                                        },
                                         {
                                             data: "id",
                                             sortable : false,
                                             render: function (data, type, row) {
                                                 return `<a href="/admin/user/${row.id}"><i class="fa-solid fa-pencil"></i></a>`
+                                            }
+                                        },
+                                        {
+                                            data : 'id',
+                                            sortable : false,
+                                            render : function(data) {
+                                                return `<a href="/admin/user/delete/${data}"><i class="fa-solid fa-trash"></i></a>`;
                                             }
                                         }
                                     ]
