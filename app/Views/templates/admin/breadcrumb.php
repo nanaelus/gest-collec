@@ -59,7 +59,13 @@
                     <li class="breadcrumb-item"><span><a href="home"</span>
                     </li>
                     <?php foreach ($breadcrumb as $bitem) { ?>
-                        <li class="breadcrumb-item"><a href="<?= $bitem['url'] ?>" class=""><?= $bitem['text'] ?></a></li>
+                        <li class="breadcrumb-item">
+                            <?php if ($bitem['url'] !== "") { ?>
+                                <a href="<?= $bitem['url'] ?>" class=""><?= $bitem['text'] ?></a>
+                            <?php } else { ?>
+                                <?= $bitem['text'] ?>
+                            <?php } ?>
+                        </li>
                     <?php } ?>
                 </ol>
 

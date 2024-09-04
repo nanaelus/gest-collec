@@ -78,6 +78,11 @@
         </div>
         <?php } ?>
         <div class="row justify-content-center">
+            <div class="col-1">
+                <img src="/assets/brand/logo-bleu.svg">
+            </div>
+        </div>
+        <div class="row justify-content-center">
             <div class="col-lg-8">
                 <div class="card-group d-block d-md-flex row">
                     <div class="card col-md-7 p-4 mb-0">

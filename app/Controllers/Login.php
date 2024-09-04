@@ -19,8 +19,10 @@ class Login extends BaseController
         // Logique de vérification des informations d'identification
         $um = Model('UserModel');
         $user = $um->verifyLogin($email,$password);
-
         if ($user) {
+            if ($user['deleted_at'] != NULL){
+                return view('/login/login', ['error' => 'Compte désactivé. Veuillez contacter un administrateur']);
+            }
             $this->session->set('user', $user);
             $redirectUrl = $this->session->get('redirect_url') ?? '/';
             $this->session->remove('redirect_url');

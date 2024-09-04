@@ -1,39 +1,58 @@
-<div class="container">
-    <div class="row">
-        <div class="col">
-            <div class="table table-sm table-hover">
-                <div class="card">
-                    <div class="card-header">
-                        <h3>Liste des rôles</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="card">
-                            <table id="tableUsers" class="table table-hover">
-                                <thead>
-                                <tr>
-                                    <th>ID rôle</th>
-                                    <th>Nom du rôle</th>
-                                    <th>Modifier</th>
-                                    <th>Supprimer</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <?php foreach ($permissions as $p) { ?>
-                                <tr>
-                                    <td><?= $p['id']; ?></td>
-                                    <td><?= $p['name']; ?></td>
-                                    <td><a href="admin/userpermission/<?= $p['id']; ?>"><i class="fa-solid fa-pencil"></i></a></td>
-                                    <td><a href="admin/userpermission/delete/<?= $p['id']; ?>"><i class="fa-solid fa-trash-can"></i></a></td>
-                                </tr>
-                                    <?php } ?>
-
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="card-footer">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h4>Liste des rôles</h4>
+        <a href="/admin/userpermission/new"><i class="fa-solid fa-circle-plus"></i></a>
     </div>
+    <div class="card-body">
+        <table id="tablePermission" class="table table-hover">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Modifier</th>
+                <th>Supprimer</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        var dataTable = $('#tablePermission').DataTable({
+            "responsive": true,
+            "processing": true,
+            "serverSide": true,
+            "pageLength": 10,
+            "language": {
+                url: '<?= base_url("/js/datatable-2.1.4-fr-FR.json") ?>',
+            },
+            "ajax": {
+                "url": "<?= base_url('/admin/userpermission/SearchPermission'); ?>",
+                "type": "POST"
+            },
+            "columns": [
+                {"data": "id"},
+                {"data": "name"},
+                {
+                    data : 'id',
+                    sortable : false,
+                    render : function(data) {
+                        return `<a href="/admin/userpermission/${data}"><i class="fa-solid fa-pencil"></i></a>`;
+                    }
+                },
+                {
+                    data : 'id',
+                    sortable : false,
+                    render : function(data) {
+                        return `<a href="/admin/userpermission/delete/${data}"><i class="fa-solid fa-trash"></i></a>`;
+                    }
+                }
+            ]
+        });
+    });
+
+</script>

@@ -6,22 +6,40 @@
     "icon": "<i class=\"nav-icon fa-solid fa-house\"></i>",
     "class": "main-menu-accueil"
   },
+  "items": {
+    "title" : "Objets",
+    "url" : "/admin/item",
+    "perm" : "none",
+    "icon": "<i class=\"nav-icon fa-solid fa-boxes-stacked\"></i>",
+    "subs" : {
+      "item": {
+        "title" : "Objets",
+        "url" : "/admin/item",
+        "icon": "<i class=\"nav-icon fa-solid fa-box-open\"></i>"
+      },
+      "type" : {
+        "title" : "Types",
+        "url" : "/admin/item/type",
+        "icon": "<i class=\"nav-icon fa-solid fa-tag\"></i>"
+      }
+    }
+  },
   "administration": {
     "title": "Administration",
     "url": "/",
     "perm": "none",
-    "icon": "<i class=\"nav-icon fas fa-file-invoice-dollar\"></i>",
+    "icon": "<i class=\"nav-icon fas fa-gear\"></i>",
     "class": "",
     "subs": {
       "user": {
-        "title": "Utilisateurs",
+        "title": "Utilisateur",
         "url": "/admin/user",
-        "icon": "<i class=\"nav-icon fas fa-user\"></i>"
+        "icon": "<i class=\"nav-icon fas fa-users-gear\"></i>"
       },
-      "animals": {
-        "title": "Role",
-        "url" : "/admin/userpermission",
-        "icon": "<i class=\"nav-icon fas fa-otter\"></i>"
+      "user-permission": {
+        "title": "Rôle",
+        "url": "/admin/userpermission",
+        "icon": "<i class=\"nav-icon fas fa-user-gear\"></i>"
       }
     }
   }
