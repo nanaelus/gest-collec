@@ -1,8 +1,9 @@
 <div class="sidebar sidebar-dark sidebar-fixed border-end" id="sidebar">
     <div class="sidebar-header border-bottom">
         <div class="sidebar-brand">
-            <img src="/assets/brand/logo-velo17-blanc-trans-300x300.png" class="sidebar-brand-full" _width="88" height="32" alt="Velo17" />
-            <img src="/assets/brand/logo-velo17-blanc-trans-300x300.png" class="sidebar-brand-narrow" _width="32" height="32" alt="Velo17" />
+            <img src="/assets/brand/logo-blanc.svg" class="sidebar-brand-full" _width="88" height="32" alt="Gest-Collect" />
+            <img src="/assets/brand/logo-blanc.svg" class="sidebar-brand-narrow" _width="32" height="32" alt="Gest-Collect" />
+            Gest-Collect
         </div>
         <button class="btn-close d-lg-none" type="button" data-coreui-dismiss="offcanvas" data-coreui-theme="dark" aria-label="Close" onclick="coreui.Sidebar.getInstance(document.querySelector(&quot;#sidebar&quot;)).toggle()"></button>
     </div>
@@ -21,16 +22,23 @@
                     </a>
                 </li>
             <?php } else { ?>
-                <li class="nav-title"><?= $menu['title'] ?></li>
-                <?php
-                foreach($menu['subs'] as $ksm => $smenu) {
-                    if (isset($smenu['admin']) && ! $user->isAdmin()) { continue; }
-                    if (isset($smenu['require']) && ! $user->check($smenu['require'])) { continue; } ?>
-                    <li class="nav-item" id="menu_<?= $ksm ?>"><a class="nav-link" href="<?= $smenu['url'] ?>">
-                            <?php if (isset($smenu['icon'])) echo $smenu['icon']; ?>
-                            <?= $smenu['title'] ?></a></li>
-                <?php }
-            }} ?>
+                <li class="nav-group">
+                    <a class="nav-link nav-group-toggle" href="#">
+                        <?= (isset($menu['icon'])) ? $menu['icon'] : ""; ?>
+                        <?= $menu['title'] ?></a>
+                    <ul class="nav-group-items compact">
+                        <?php
+                        foreach($menu['subs'] as $ksm => $smenu) {
+
+                            if (isset($smenu['admin']) && ! $user->isAdmin()) { continue; }
+                            if (isset($smenu['require']) && ! $user->check($smenu['require'])) { continue; } ?>
+                            <li class="nav-item" id="menu_<?= $ksm ?>"><a class="nav-link" href="<?= $smenu['url'] ?>">
+                                    <?php if (isset($smenu['icon'])) echo $smenu['icon']; ?>
+                                    <?= $smenu['title'] ?></a></li>
+                        <?php } ?>
+                    </ul>
+                </li>
+            <?php }} ?>
 
         <li class="nav-item mt-auto">
             <a class="nav-link" href="/login/logout">
