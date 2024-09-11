@@ -12,6 +12,7 @@
                             <thead>
                             <tr>
                                 <th>ID</th>
+                                <th>Avatar</th>
                                 <th>Username</th>
                                 <th>Mail</th>
                                 <th>Rôle</th>
@@ -26,6 +27,7 @@
 
                         <script>
                             $(document).ready(function () {
+                                var baseUrl = "<?= base_url() ;?>";
                                 var dataTable = $('#tableUsers').DataTable({
                                     "responsive": true,
                                     "processing": true,
@@ -40,6 +42,18 @@
                                     },
                                     "columns": [
                                         {"data": "id"},
+                                        {
+                                            data : 'avatar_url',
+                                            sortable : false,
+                                            render : function(data) {
+                                                if(data) {
+                                                    return `<img src="${baseUrl}/${data}" alt="Avatar" style="max-width: 20px; height: auto;">`;
+                                                } else {
+                                                    // Retourne une image par défaut si data est vide
+                                                    return '<img src="' + baseUrl + '/assets/img/avatars/1.jpg" alt="Default Avatar" style="max-width: 20px; height: auto;">';
+                                                }
+                                            }
+                                        },
                                         {"data": "username"},
                                         {"data": "email"},
                                         {"data": "permission_name"},

@@ -73,6 +73,17 @@ class User extends Entity
         return $permission ? $permission['slug'] : '';  // Assurez-vous que 'slug' est dans le modèle PermissionModel
     }
 
+    public function getProfileImage() : string
+    {
+        // Charger l'image depuis la table media
+        $mediaModel = model('MediaModel');
+        $media = $mediaModel->where('entity_id', $this->id)
+            ->where('entity_type', 'user')
+            ->first();
+
+        // Si aucune image n'est trouvée, retourner une image par défaut
+        return $media ? $media['file_path'] : '/assets/img/avatars/1.jpg';
+    }
     static public function permission_levels(): array
     {
         return [
