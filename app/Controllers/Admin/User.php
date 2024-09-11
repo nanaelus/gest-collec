@@ -31,6 +31,26 @@ class User extends BaseController
     public function postupdate() {
         $data = $this->request->getPost();
         $um = Model("UserModel");
+
+        // Vérifier si des fichiers ont été soumis dans le formulaire
+        $file = $this->request->getFile('profile_image'); // 'profile_image' est le nom du champ dans le formulaire
+        if ($file && $file->isValid()) {
+            // Préparer les données du média
+            $mediaData = [
+                'entity_type' => 'user',
+                'entity_id'   => $data['id'],   // Utiliser le nouvel ID de l'utilisateur
+            ];
+
+            // Utiliser la fonction upload_file() pour gérer l'upload et les données du média
+            $filePath = upload_file($file, 'avatar', $data['username'], $mediaData);
+
+            if ($filePath === false) {
+                $this->error("Une erreur est survenue lors de l'upload de l'image.");
+                return $this->redirect("/admin/user");
+            }
+        }
+
+
         if ($um->updateUser($data['id'], $data)) {
             $this->success("Utilisateur à bien été modifié");
         } else {
@@ -42,7 +62,29 @@ class User extends BaseController
     public function postcreate() {
         $data = $this->request->getPost();
         $um = Model("UserModel");
-        if ($um->createUser($data)) {
+
+        // Créer l'utilisateur et obtenir son ID
+        $newUserId = $um->createUser($data);
+
+        // Vérifier si la création a réussi
+        if ($newUserId) {
+            // Vérifier si des fichiers ont été soumis dans le formulaire
+            $file = $this->request->getFile('profile_image'); // 'profile_image' est le nom du champ dans le formulaire
+            if ($file && $file->isValid()) {
+                // Préparer les données du média
+                $mediaData = [
+                    'entity_type' => 'user',
+                    'entity_id'   => $newUserId,   // Utiliser le nouvel ID de l'utilisateur
+                ];
+
+                // Utiliser la fonction upload_file() pour gérer l'upload et les données du média
+                $filePath = upload_file($file, 'avatar', $data['username'], $mediaData);
+
+                if ($filePath === false) {
+                    $this->error("Une erreur est survenue lors de l'upload de l'image.");
+                    return $this->redirect("/admin/user/new");
+                }
+            }
             $this->success("L'utilisateur à bien été ajouté.");
             $this->redirect("/admin/user");
         } else {
@@ -90,9 +132,10 @@ class User extends BaseController
         $searchValue = $this->request->getPost('search')['value'];
 
         // Obtenez les informations sur le tri envoyées par DataTables
-        $orderColumnIndex = $this->request->getPost('order')[0]['column'];
-        $orderDirection = $this->request->getPost('order')[0]['dir'];
-        $orderColumnName = $this->request->getPost('columns')[$orderColumnIndex]['data'];
+        $orderColumnIndex = $this->request->getPost('order')[0]['column'] ?? 0;
+        $orderDirection = $this->request->getPost('order')[0]['dir'] ?? 'asc';
+        $orderColumnName = $this->request->getPost('columns')[$orderColumnIndex]['data'] ?? 'id';
+
 
         // Obtenez les données triées et filtrées
         $data = $UserModel->getPaginatedUser($start, $length, $searchValue, $orderColumnName, $orderDirection);
