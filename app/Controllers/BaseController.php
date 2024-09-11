@@ -77,6 +77,7 @@ abstract class BaseController extends Controller
      */
     protected $messages = [];
 
+    protected $requiredPermissions = ['collaborateur', 'administrateur', 'utilisateur'];
     protected $toastr = true;
 
     protected function menus()
@@ -111,6 +112,7 @@ abstract class BaseController extends Controller
         // Vérifier l'authentification si nécessaire
         if ($this->require_auth) {
             $this->checkLogin();
+            $this->checkPermission();
         }
     }
 
@@ -123,6 +125,17 @@ abstract class BaseController extends Controller
             if ($redirect) {
                 $this->session->set('redirect_url', current_url(true)->getPath()); // Save the current URL for redirection after login
                 return $this->redirect('/login');
+            }
+            return false;
+        }
+        return true;
+    }
+
+    public function checkPermission() {
+        if (isset($this->session->user)) {
+            if (!in_array($this->session->user->getPermissionSlug(), $this->requiredPermissions)) {
+                $this->session->set('redirect_url', current_url(true)->getPath()); // Save the current URL for redirection after login
+                return $this->redirect('/forbidden');
             }
             return false;
         }
@@ -149,9 +162,9 @@ abstract class BaseController extends Controller
      */
     public function redirect(string $url, array $data = [])
     {
+
         //$url = implode('/', array_slice(func_get_args(), 1));
         $url = base_url($url);
-
         // Store messages in flashdata
         if (count($this->messages) > 0) {
             session()->setFlashdata('messages', $this->messages);
@@ -197,7 +210,6 @@ abstract class BaseController extends Controller
             . (($vue !== null) ? view($vue, $datas) : '')
             . view($template_dir . 'footer', ['messages' => $this->messages]);
     }
-
 
     public function success($txt)
     {

@@ -9,6 +9,7 @@
             <tr>
                 <th>ID</th>
                 <th>Nom</th>
+                <th>Slug</th>
                 <th>Modifier</th>
                 <th>Supprimer</th>
             </tr>
@@ -37,6 +38,7 @@
             "columns": [
                 {"data": "id"},
                 {"data": "name"},
+                {"data": "slug"},
                 {
                     data : 'id',
                     sortable : false,

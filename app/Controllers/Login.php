@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
+use App\Entities\User;
+
 class Login extends BaseController
 {
     protected $require_auth = false;
@@ -20,7 +22,8 @@ class Login extends BaseController
         $um = Model('UserModel');
         $user = $um->verifyLogin($email,$password);
         if ($user) {
-            if ($user['deleted_at'] != NULL){
+            $user = new User($user);
+            if (!$user->isActive()){
                 return view('/login/login', ['error' => 'Compte désactivé. Veuillez contacter un administrateur']);
             }
             $this->session->set('user', $user);

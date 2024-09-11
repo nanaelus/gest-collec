@@ -7,6 +7,7 @@ use App\Controllers\BaseController;
 class User extends BaseController
 {
     protected $require_auth = true;
+    protected $requiredPermissions = ['administrateur'];
     public function getindex($id = null) {
         $um = Model("UserModel");
         if ($id == null) {
@@ -14,8 +15,8 @@ class User extends BaseController
             return $this->view("/admin/user/index.php",['users' => $users], true);
         } else {
             $permissions = Model("UserPermissionModel")->getAllPermissions();
-            if($id == "new") {
-                return $this->view("/admin/user/user",['permissions' => $permissions], true);
+            if ($id == "new") {
+                return $this->view("/admin/user/user",["permissions" => $permissions], true);
             }
             $utilisateur = $um->getUserById($id);
             if ($utilisateur) {
@@ -42,26 +43,35 @@ class User extends BaseController
         $data = $this->request->getPost();
         $um = Model("UserModel");
         if ($um->createUser($data)) {
-            $this->success("L'utilisateur à bien été ajouté");
+            $this->success("L'utilisateur à bien été ajouté.");
             $this->redirect("/admin/user");
         } else {
             $errors = $um->errors();
-            foreach ($errors as $error)
-            {
-            $this->error($error);
+            foreach ($errors as $error) {
+                $this->error($error);
             }
             $this->redirect("/admin/user/new");
         }
     }
 
-    public function getdelete($id) {
+    public function getdeactivate($id){
         $um = Model('UserModel');
-        if($um->deleteUser($id)) {
-            $this->success("Utilisateur supprimé avec succès");
+        if ($um->deleteUser($id)) {
+            $this->success("Utilisateur désactivé");
         } else {
-            $this->error("Utilisateur non supprimé");
+            $this->error("Utilisateur non désactivé");
         }
-        $this->redirect("/admin/user");
+        $this->redirect('/admin/user');
+    }
+
+    public function getactivate($id){
+        $um = Model('UserModel');
+        if ($um->activateUser($id)) {
+            $this->success("Utilisateur activé");
+        } else {
+            $this->error("Utilisateur non activé");
+        }
+        $this->redirect('/admin/user');
     }
 
     /**

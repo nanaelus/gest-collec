@@ -68,20 +68,20 @@
 <body>
 <div class="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
     <div class="container">
-        <?php if (isset($error)) { ?>
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="alert alert-danger" role="alert">
-                    <?= $error ?>
-                </div>
-            </div>
-        </div>
-        <?php } ?>
         <div class="row justify-content-center">
             <div class="col-1">
                 <img src="/assets/brand/logo-bleu.svg">
             </div>
         </div>
+        <?php if (isset($error)) { ?>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="alert alert-danger" role="alert">
+                        <?= $error ?>
+                    </div>
+                </div>
+            </div>
+        <?php } ?>
         <div class="row justify-content-center">
             <div class="col-lg-8">
                 <div class="card-group d-block d-md-flex row">

@@ -47,6 +47,7 @@
                     <i class="icon icon-lg theme-icon-active fa-solid fa-user"></i>
                 </button>
                 <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="/admin/user/<?= $user->id; ?>">Modifier mon compte</a></li>
                     <li><a class="dropdown-item" href="/login/logout">Se deconnecter</a></li>
                 </ul>
             </li>

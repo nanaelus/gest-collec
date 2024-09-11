@@ -10,7 +10,7 @@ class UserPermissionModel extends Model
     protected $primaryKey = 'id';
 
     // Champs permis pour les opérations d'insertion et de mise à jour
-    protected $allowedFields = ['name'];
+    protected $allowedFields = ['name', 'slug'];
 
     // Validation
     protected $validationRules = [
@@ -25,7 +25,49 @@ class UserPermissionModel extends Model
         ],
     ];
 
-    // Relations avec les utilisateurs
+    public function createPermission($data)
+    {
+        if (isset($data['name'])) {
+            // Générer et vérifier le slug unique
+            $data['slug'] = $this->generateUniqueSlug($data['name']);
+        }
+
+        return $this->insert($data);
+    }
+
+    public function updatePermission($id, $data)
+    {
+        if (isset($data['name'])) {
+            // Générer et vérifier le slug unique
+            $data['slug'] = $this->generateUniqueSlug($data['name']);
+        }
+
+        return $this->update($id, $data);
+    }
+
+    private function generateUniqueSlug($name)
+    {
+        $slug = generateSlug($name); // Utilisez la fonction du helper pour générer le slug de base
+        $builder = $this->builder();
+
+        // Vérifiez si le slug existe déjà
+        $count = $builder->where('slug', $slug)->countAllResults();
+
+        if ($count === 0) {
+            return $slug;
+        }
+
+        // Si le slug existe, ajoutez un suffixe numérique pour le rendre unique
+        $i = 1;
+        while ($count > 0) {
+            $newSlug = $slug . '-' . $i;
+            $count = $builder->where('slug', $newSlug)->countAllResults();
+            $i++;
+        }
+
+        return $newSlug;
+    }
+
     public function getUsersByPermission($permissionId)
     {
         return $this->join('TableUser', 'TableUserPermission.id = TableUser.id_permission')
@@ -34,29 +76,21 @@ class UserPermissionModel extends Model
             ->findAll();
     }
 
-    public function getAllPermissions(){
+    public function getAllPermissions()
+    {
         return $this->findAll();
     }
 
-    public function getUserPermissionById($id){
-        return $this->find($id);
-    }
-
-    public function updatePermission($id,$data) {
-        $builder = $this->builder();
-        $builder->where('id', $id);
-        return $builder->update($data);
-    }
-
-    public function createPermission($data)
+    public function getUserPermissionById($id)
     {
-        return $this->insert($data);
+        return $this->find($id);
     }
 
     public function deletePermission($id)
     {
         return $this->delete($id);
     }
+
     public function getPaginatedPermission($start, $length, $searchValue, $orderColumnName, $orderDirection)
     {
         $builder = $this->builder();
@@ -85,7 +119,7 @@ class UserPermissionModel extends Model
     {
         $builder = $this->builder();
         // @phpstan-ignore-next-line
-        if (! empty($searchValue)) {
+        if (!empty($searchValue)) {
             $builder->like('name', $searchValue);
         }
 

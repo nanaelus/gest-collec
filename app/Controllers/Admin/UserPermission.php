@@ -6,6 +6,8 @@ use App\Controllers\BaseController;
 
 class UserPermission extends BaseController
 {
+    protected $require_auth = true;
+    protected $requiredPermissions = ['administrateur'];
     public function getindex($id = null) {
         if ($id == null) {
             return $this->view('/admin/user/index-permission', [], true);

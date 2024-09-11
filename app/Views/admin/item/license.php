@@ -1,28 +1,27 @@
-<?php print_r($all_types); ?>
 <div class="row mb-4">
     <div class="col">
         <div class="card">
             <div class="card-header">
-                <h3>Types d'objet</h3>
+                <h3>Licence de l'objet</h3>
             </div>
         </div>
     </div>
 </div>
 <div class="row">
     <div class="col-md-4">
-        <form action="admin/item/createtype" method="POST">
+        <form action="admin/item/createlicense" method="POST">
             <div class="card">
                 <div class="card-header">
-                    <h5>Ajouter un type</h5>
+                    <h5>Ajouter une Licence</h5>
                 </div>
                 <div class="card-body">
-                    <label class="form-label">Nom du type</label>
+                    <label class="form-label">Nom de la Licence</label>
                     <input type="text" class="form-control" name="name">
                     <label class="form-label">Type du parent</label>
-                    <select class="form-select" name="id_type_parent">
+                    <select class="form-select" name="id_license_parent">
                         <option value="" selected>Aucun</option>
-                        <?php foreach ($all_types as $type) { ?>
-                        <option value="<?= $type['id'] ; ?>"><?= $type['name']; ?></option>
+                        <?php foreach ($all_licenses as $license) { ?>
+                            <option value="<?= $license['id'] ; ?>"><?= $license['name']; ?></option>
                         <?php } ?>
                     </select>
                 </div>
@@ -32,21 +31,21 @@
             </div>
         </form>
     </div>
-    <div class="col-md-8">
+    <div class="col">
         <div class="card">
             <div class="card-header">
-                <h5>Liste des types</h5>
+                <h4 class="card-title">Gestion des Licences</h4>
             </div>
             <div class="card-body">
-                <table class="table table-sm table-hover" id="tableTypes">
+                <table class="table table-sm table-hover" id="tableLicenses">
                     <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Id Parent</th>
-                        <th>Nom</th>
+                        <th>ID Parent</th>
+                        <th>Nom de la Licence</th>
                         <th>Slug</th>
                         <th>Modif.</th>
-                        <th>Supp.</th>
+                        <th>Sup.</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -59,10 +58,10 @@
             </div>
         </div>
     </div>
-</div>
+
 <script>
     $(document).ready(function () {
-        var dataTable = $('#tableTypes').DataTable({
+        var dataTable = $('#tableLicenses').DataTable({
             "responsive": true,
             "processing": true,
             "serverSide": true,
@@ -73,11 +72,11 @@
             "ajax": {
                 "url" : "<?= base_url('/admin/item/searchdatatable'); ?>",
                 "type": "POST",
-                "data" : {'model' : "ItemTypeModel"}
+                "data" : {'model' : 'ItemLicenseModel'}
             },
             "columns" : [
                 {"data": 'id'},
-                {"data" : "id_type_parent"},
+                {"data" : "id_license_parent"},
                 {"data" : "name"},
                 {"data" : "slug"},
                 {"data" : "slug"},
@@ -85,31 +84,31 @@
                     data : 'id',
                     sortable : false,
                     render : function(data) {
-                        return `<a class="swal2-type" id="${data}" swal2-title="Êtes vous sûr de vouloir supprimer ce type ?" swal2-text="" href="/admin/item/deletetype/${data}"><i class="fa-solid fa-trash"></i></a>`;
+                        return `<a class="swal2-license" id="${data}" swal2-title="Êtes tous sûr de vouloir supprimer cette licence?" swal2-text="" href="/admin/item/deletelicense/${data}"><i class="fa-solid fa-trash"></i></a>`;
                     }
                 },
             ]
         });
-        $("body").on("click", '.swal2-type', function (event) {
+        $("body").on("click", '.swal2-license', function (event) {
             event.preventDefault();
             let title = $(this).attr("swal2-title");
             let text = $(this).attr("swal2-title");
             let link = $(this).attr("href");
             let id = $(this).attr("id");
             if (id==1) {
-                Swal.fire("TU NE PEUX PAS SUPPRIMER \"Non classé\" !")
+                Swal.fire("TU NE PEUX PAS SUPPRIMER \"Aucune Marque\" !")
             } else {
                 $.ajax({
                     type: 'GET',
-                    url: "<?= base_url('/admin/item/totalitembytype'); ?>",
+                    url: "<?= base_url('/admin/item/totalitembylicense'); ?>",
                     data: {
                         id : id,
                     },
                     success: function (data) {
                         let json = JSON.parse(data)
                         console.log(json.total);
-                        let title = "Supprimer un type"
-                        let text = `Ce type est attribué à <b class="text-danger">${json.total}</b> objets. Êtes vous sûr de vouloir continuer?`;
+                        let title = "Supprimer une marque"
+                        let text = `Cette marque est attribuée à <b class="text-danger">${json.total}</b> objets. Êtes vous sûr de vouloir continuer?`;
                         warningswal2(title, text, link);
                     }
                 })

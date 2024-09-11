@@ -8,10 +8,12 @@ class Dashboard extends BaseController
 {
     protected $title      = 'Tableau de Bord';
     protected $require_auth = true;
+    protected $requiredPermissions = ['administrateur'];
+
     public function getindex(): string
     {
-        $um = Model('App\Models\UserModel');
-        $infosUser= $um->countUserByPermission();
+        $um = Model("App\Models\UserModel");
+        $infosUser = $um->countUserByPermission();
         return $this->view('/admin/dashboard/index.php', ['infosUser' => $infosUser], true);
     }
 
@@ -23,8 +25,9 @@ class Dashboard extends BaseController
         $this->error("Oh");
         $this->redirect("/admin/dashboard");
     }
+
     public function gettest2() {
-        $um = Model('App\Models\UserModel');
+        $um = Model("App\Models\UserModel");
         print_r($um->countUserByPermission());
     }
 }

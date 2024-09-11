@@ -21,13 +21,28 @@
         "title" : "Types",
         "url" : "/admin/item/type",
         "icon": "<i class=\"nav-icon fa-solid fa-tag\"></i>"
+      },
+      "brand" : {
+        "title": "Marques",
+        "url" : "/admin/item/brand",
+        "icon": "<i class=\"nav-icon fa-solid fa-tag\"></i>"
+      },
+      "genre" : {
+        "title": "Genres",
+        "url" : "/admin/item/genre",
+        "icon": "<i class=\"nav-icon fa-solid fa-tag\"></i>"
+      },
+      "license" : {
+        "title": "Licences",
+        "url" : "/admin/item/license",
+        "icon": "<i class=\"nav-icon fa-solid fa-tag\"></i>"
       }
     }
   },
   "administration": {
     "title": "Administration",
     "url": "/",
-    "perm": "none",
+    "require": "administrateur",
     "icon": "<i class=\"nav-icon fas fa-gear\"></i>",
     "class": "",
     "subs": {
