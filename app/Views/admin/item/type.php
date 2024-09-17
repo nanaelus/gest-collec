@@ -1,4 +1,3 @@
-<?php print_r($all_types); ?>
 <div class="row mb-4">
     <div class="col">
         <div class="card">
@@ -60,6 +59,27 @@
         </div>
     </div>
 </div>
+
+<!-- modal-->
+
+<div class="modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Modal body text goes here.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     $(document).ready(function () {
         var dataTable = $('#tableTypes').DataTable({
@@ -80,7 +100,13 @@
                 {"data" : "id_type_parent"},
                 {"data" : "name"},
                 {"data" : "slug"},
-                {"data" : "slug"},
+                {
+                    data: 'id',
+                    sortable: false,
+                    render: function (data) {
+                        return `<button type="button" class="fa-solid fa-pencil" data-bs-toggle="modal" data-bs-target="update-btn" ></button>`;
+                    }
+                },
                 {
                     data : 'id',
                     sortable : false,
@@ -116,4 +142,5 @@
             }
         });
     })
+
 </script>

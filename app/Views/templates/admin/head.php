@@ -34,6 +34,7 @@
     <link rel="stylesheet" href="<?= base_url('/css/toastr.min.css') ?>">
 
 
+
     <!-- Javascript -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
     <script src="<?= base_url('/js/jquery-3.7.1.min.js') ?>"></script>
@@ -44,6 +45,9 @@
     <script src="<?= base_url('/vendors/@coreui/utils/js/index.js') ?>"></script>
     <script src="<?= base_url('/js/main.js') ?>"></script>
     <script src="<?= base_url('/js/toastr.min.js') ?>"></script>
+    <script src="<?= base_url('/js/tinymce/tinymce.min.js') ?>"></script>
+
+
     <script>
         const header = document.querySelector('header.header');
 
@@ -57,9 +61,18 @@
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js" integrity="sha512-GWzVrcGlo0TxTRvz9ttioyYJ+Wwk9Ck0G81D+eO63BaqHaJ3YZX9wuqjwgfcV/MrB2PhaVX9DkYVhbFpStnqpQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
     <!-- Datatable -->
     <link href="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-2.0.0/b-3.0.0/b-html5-3.0.0/fh-4.0.0/sp-2.3.0/datatables.min.css" rel="stylesheet">
     <script src="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-2.0.0/b-3.0.0/b-html5-3.0.0/fh-4.0.0/sp-2.3.0/datatables.min.js"></script>
+
+<!-- Sweet Alert -->
+<link href="<?= base_url('/css/sweetalert2.min.css') ; ?>" rel="stylesheet">
+<script src="<?= base_url('/js/sweetalert2.all.min.js');?>"></script>
+
+
+    <!-- BOOTSTRAP BUNDLE -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </head>
 <body>
 <?php if (isset($menus)) {
@@ -68,7 +81,3 @@
     <?php if (isset($breadcrumb)) { echo view($template_dir . '/breadcrumb');  } ?>
     <div class="body flex-grow-1">
         <div class="container-fluid px-4">
-
-<!-- Sweet Alert -->
-<link href="<?= base_url('/css/sweetalert2.min.css') ; ?>" rel="stylesheet">
-<script src="<?= base_url('/js/sweetalert2.all.min.js');?>"></script>

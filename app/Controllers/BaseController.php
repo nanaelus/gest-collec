@@ -77,7 +77,7 @@ abstract class BaseController extends Controller
      */
     protected $messages = [];
 
-    protected $requiredPermissions = ['collaborateur', 'administrateur', 'utilisateur'];
+    protected $requiredPermissions = ['collaborateur'];
     protected $toastr = true;
 
     protected function menus()
