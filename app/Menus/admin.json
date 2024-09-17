@@ -39,6 +39,11 @@
       }
     }
   },
+  "media": {
+    "title": "Médias",
+    "url": "/admin/media",
+    "icon": "<i class=\"nav-icon fa-solid fa-image\"></i>"
+  },
   "administration": {
     "title": "Administration",
     "url": "/",
