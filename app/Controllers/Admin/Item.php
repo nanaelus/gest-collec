@@ -22,20 +22,165 @@ class Item extends BaseController
             }
             $item = model('ItemModel')->getItem($id);
             if ($item) {
-            return $this->view('admin/item/item.php', ['genres' => $genres, 'types' => $types, 'licenses' => $licenses, 'brands'=> $brands, 'item' => $item], true);
+                return $this->view('admin/item/item.php', ['genres' => $genres, 'types' => $types, 'licenses' => $licenses, 'brands'=> $brands, 'item' => $item, 'medias' => model('MediaModel')->getMediaByEntityIdAndType($id,'item'), 'genre_item' => model('ItemGenreItemModel')->getAllItemGenreByIdItem($id)], true);
             } else {
-                $this->error("L'ID n'existe pas");
+                $this->error('L\'ID n\'est pas valide');
                 $this->redirect('/admin/item');
             }
         }
         return $this->view('admin/item/index', [], true);
     }
-
-    public function posttest() {
+    public function postcreateitem() {
         $data = $this->request->getPost();
-        $files = $this->request->getFiles();
+        $im = model('ItemModel');
+        $id_item = $im->insertItem($data);
+        if ($id_item) {
+            //GENRE
+            $data_genre = [];
+            if (isset($data['genres'])) {
+                foreach ($data['genres'] as $g) {
+                    $genre = [];
+                    $genre['id_item'] = $id_item;
+                    $genre['id_genre'] = $g;
+                    $data_genre[] = $genre;
+                }
+            } else {
+                $data_genre = [ ['id_item' => $id_item, 'id_genre' => 1] ];
+            }
+            $igim = model('ItemGenreItemModel');
+            $igim->insertMultipleGenre($data_genre);
 
-        return $this->view('dev-test.php', ['data' => $data, 'files' => $files]);
+            //IMAGES
+            $files = $this->request->getFiles();
+            foreach($files['images'] as $file) {
+                if ($file && $file->getError() !== UPLOAD_ERR_NO_FILE) {
+                    $mediaData = [
+                        'entity_type' => 'item',
+                        'entity_id' => $id_item,
+                        'created_at' => date('Y-m-d H:i:s')
+                    ];
+
+                    // Utiliser la fonction upload_file() pour gérer l'upload et les données du média
+                    $uploadResult = upload_file($file, 'item', $file->getName(), $mediaData,true);
+
+                    // Vérifier le résultat de l'upload
+                    if (is_array($uploadResult) && $uploadResult['status'] === 'error') {
+                        // Afficher un message d'erreur détaillé et rediriger
+                        $this->error("Une erreur est survenue lors de l'upload de l'image : " . $uploadResult['message']);
+                    }
+                }
+            }
+            $first_img = Model("MediaModel")->getFirstMediaByEntityIdAndType($id_item,'item');
+            if($first_img) {
+
+                Model("ItemModel")->updateItem($id_item, ['id_default_img' => $first_img['id']]);
+            }
+
+            $this->success("Objet ajouté");
+        } else {
+            $this->error('Objet non ajouté');
+        }
+        $this->redirect('/admin/item');
+    }
+    public function postupdateitem() {
+        $data = $this->request->getPost();
+        $im = model('ItemModel');
+        $id_item = $data['id'];
+        if ($id_item) {
+            $im->updateItem($id_item,$data);
+            //GENRE
+            if (isset($data['genres'])) {
+                $genre_final = $data['genres'];
+            } else {
+                $genre_final = [];
+            }
+            $genre_initial = model('ItemGenreItemModel')->getAllItemGenreByIdItem($id_item);
+            $genre_initial = array_column($genre_initial, 'id_genre');
+            $genre_a_supprimer = array_diff($genre_initial,$genre_final);
+            $genre_a_ajouter = array_diff($genre_final,$genre_initial);
+            $data_genre = [];
+            if ($genre_a_ajouter) {
+                foreach ($genre_a_ajouter as $g) {
+                    $genre = [];
+                    $genre['id_item'] = $id_item;
+                    $genre['id_genre'] = $g;
+                    $data_genre[] = $genre;
+                }
+            } else {
+                if (count($genre_initial) == 0 || count($genre_final) == 0) {
+                    $data_genre = [ ['id_item' => $id_item, 'id_genre' => 1] ];
+                }
+            }
+
+
+            $igim = model('ItemGenreItemModel');
+            if ( !(count($genre_initial) == 1 && $genre_initial[0] == 1) || count($genre_a_ajouter) != 0 ) {
+                if (isset($genre_a_supprimer) && $genre_a_supprimer) {
+                    $igim->deleteMultipleGenre($id_item,$genre_a_supprimer);
+                }
+                if (count($data_genre) != 0) {
+                    $igim->insertMultipleGenre($data_genre);
+                }
+            }
+
+            //IMAGES
+            $files = $this->request->getFiles();
+            foreach($files['images'] as $file) {
+                if ($file && $file->getError() !== UPLOAD_ERR_NO_FILE) {
+                    $mediaData = [
+                        'entity_type' => 'item',
+                        'entity_id' => $id_item,
+                        'created_at' => date('Y-m-d H:i:s')
+                    ];
+
+                    // Utiliser la fonction upload_file() pour gérer l'upload et les données du média
+                    $uploadResult = upload_file($file, 'item', $file->getName(), $mediaData,true);
+
+                    // Vérifier le résultat de l'upload
+                    if (is_array($uploadResult) && $uploadResult['status'] === 'error') {
+                        // Afficher un message d'erreur détaillé et rediriger
+                        $this->error("Une erreur est survenue lors de l'upload de l'image : " . $uploadResult['message']);
+                    }
+                }
+            }
+            $this->success("Objet modifié");
+        } else {
+            $this->error('Objet non modifié');
+        }
+        $this->redirect('/admin/item');
+    }
+    public function getdeleteitem($id = null){
+        if ($id) {
+            $im = model('ItemModel');
+            if ($im->delete($id)) {
+                $this->success("Objet supprimé");
+            } else {
+                $this->error("Objet non supprimé");
+            }
+            $this->redirect('/admin/item');
+        }
+    }
+    public function getdeactivate($id= null){
+        if ($id) {
+            $im = model('ItemModel');
+            if ($im->updateItem($id, ['active' => 0])) {
+                $this->success("Objet désactivé");
+            } else {
+                $this->error('Objet non désactivé');
+            }
+            $this->redirect('/admin/item');
+        }
+    }
+    public function getactivate($id = null){
+        if ($id) {
+            $im = model('ItemModel');
+            if ($im->updateItem($id, ['active' => 1])) {
+                $this->success("Objet activé");
+            } else {
+                $this->error('Objet non activé');
+            }
+            $this->redirect('/admin/item');
+        }
     }
     public function gettype(){
         $this->title="Gestion des Types";
@@ -90,6 +235,15 @@ class Item extends BaseController
             $this->error('Marque non ajouté');
         }
         $this->redirect('/admin/item/brand');
+    }
+    public function postupdatebrand() {
+        $data = $this->request->getPost();
+        if ($data['id_brand_parent'] == "") {
+            unset($data['id_brand_parent']);
+        }
+        $ibm = Model('ItemBrandModel');
+        $ibm->updateBrand($data['id'], $data);
+        return json_encode($ibm->getBrandById($data['id']));
     }
     public function getgenre(){
         $this->title="Gestion des Genres";
@@ -155,6 +309,16 @@ class Item extends BaseController
         }
         return $this->redirect('/admin/item/license');
     }
+    public function postupdatelicense(){
+        $data = $this->request->getPost();
+        print_r($data);
+        if ($data['id_license_parent'] == "") {
+            unset($data['id_license_parent']);
+        }
+        $ilm = Model('ItemLicenseModel');
+        $ilm->updateLicense($data['id'], $data);
+        return json_encode($ilm->getLicenseById($data['id']));
+    }
     public function postcreatelicense() {
         $data = $this->request->getPost();
         $ibm = Model('ItemLicenseModel');
@@ -165,86 +329,6 @@ class Item extends BaseController
         }
         $this->redirect('/admin/item/license');
     }
-
-    public function postcreateitem() {
-        $data = $this->request->getPost();
-        $im = Model('ItemModel');
-        $id_item = $im->insertItem($data);
-        if ($id_item) {
-            // Gestion des Genres
-            $data_genre = [];
-            if(isset($data['genres'])){
-                foreach ($data['genres'] as $g) {
-                    $genre = [];
-                    $genre['id_item'] = $id_item;
-                    $genre['id_genre'] = $g;
-                    $data_genre[] = $genre;
-                }
-            } else {
-                $data_genre = [['id_item' => $id_item, 'id_genre' => 1]];
-            }
-            $igim = model('ItemGenreItemModel');
-            $igim->insertMultipleGenre($data_genre);
-
-            //Gestion des Images
-            $files = $this->request->getFiles();
-            foreach ($files['images'] as $file) {
-                if ($file && $file->isValid()) {
-                    // Préparer les données du média
-                    $mediaData = [
-                        'entity_type' => 'item',
-                        'entity_id'   => $id_item,
-                        'created_at' => date("Y-m-d H:i:s"),
-                    ];
-
-                    // Utiliser la fonction upload_file() pour gérer l'upload et les données du média
-                    $filePath = upload_file($file, 'item', $file->getName(), $mediaData, true);
-
-                    if ($filePath === false) {
-                        $this->error("Une erreur est survenue lors de l'upload de l'image.");
-                    }
-                }
-            }
-            $this->success('Objet ajouté');
-        } else {
-            $this->error('Erreur lors de l\'ajout de l\'objet');
-        }
-        $this->redirect('/admin/item');
-    }
-
-    public function postupdateitem($id) {
-        $data = $this->request->getPost();
-        $im = Model('ItemModel');
-        if ($im->updateItem($data, $id)) {
-            $this->success('Objet modifié avec succès');
-        } else {
-            $this->error('Erreur lors de l\'ajout de l\'objet');
-        }
-        $this->redirect('/admin/item');
-    }
-
-    public function getdeleteitem($id = null) {
-        $im = Model('ItemModel');
-        if ($im->deleteItem($id)) {
-            $this->success('Objet supprimé avec succès');
-        } else {
-            $this->error('Objet non supprimé');
-        }
-        $this->redirect('/admin/item');
-    }
-
-    public function getdesactivate($id = null) {
-        if($id) {
-            $im = model('ItemModel');
-            if($im->updateItem($id, ['active' => 1])) {
-                $this->success('Objet activé');
-            } else {
-                $this->error('Objet non activé');
-            }
-            $this->redirect('/admin/item');
-        }
-    }
-
     public function postsearchdatatable()
     {
         $model_name = $this->request->getPost('model');
@@ -257,9 +341,9 @@ class Item extends BaseController
         $searchValue = $this->request->getPost('search')['value'];
 
         // Obtenez les informations sur le tri envoyées par DataTables
-        $orderColumnIndex = $this->request->getPost('order')[0]['column'];
-        $orderDirection = $this->request->getPost('order')[0]['dir'];
-        $orderColumnName = $this->request->getPost('columns')[$orderColumnIndex]['data'];
+        $orderColumnIndex = $this->request->getPost('order')[0]['column'] ?? 0;
+        $orderDirection = $this->request->getPost('order')[0]['dir'] ?? 'asc';
+        $orderColumnName = $this->request->getPost('columns')[$orderColumnIndex]['data'] ?? 'id';
 
         // Obtenez les données triées et filtrées
         $data = $model->getPaginated($start, $length, $searchValue, $orderColumnName, $orderDirection);
@@ -277,5 +361,18 @@ class Item extends BaseController
             'data'            => $data,
         ];
         return $this->response->setJSON($result);
+    }
+
+    public function gettest(){
+        return $this->view('dev-test');
+    }
+    public function postupdatetype() {
+        $data = $this->request->getPost();
+        if($data['id_type_parent'] == "") {
+            unset($data['id_type_parent']);
+        }
+        $itm = Model('ItemTypeModel');
+        $itm->updateType($data['id'], $data);
+        return json_encode($itm->getTypeById($data['id']));
     }
 }

@@ -44,16 +44,15 @@
                     data : 'id',
                     sortable : false,
                     render : function(data, type, row) {
-                        return (row.active == 0 ?
-                            `<a title="Désactiver" href="/admin/item/desactivate/${row.id}"><i class="fa-solid fa-xl
-                            fa-toggle-off text-success"></i></a>`: `<a title="Activer"href="/admin/item/activate/${row.id}"><i class="fa-solid fa-toggle-on fa-xl text-danger"></i></a>`);
+                        return (row.active == 1 ?
+                            `<a title="Désactiver" href="/admin/item/deactivate/${row.id}"><i class="fa-solid fa-xl fa-toggle-on text-success"></i></a>`: `<a title="Activer"href="/admin/item/activate/${row.id}"><i class="fa-solid fa-toggle-off fa-xl text-danger"></i></a>`);
                     }
                 },
                 {
-                    data : 'id',
+                    data : 'slug',
                     sortable : false,
                     render : function(data) {
-                        return `<a href="/admin/item/${data}"><i class="fa-solid fa-pencil"></i></a>`;
+                        return `<a target ="_blank" href="/item/${data}"><i class="fa-solid fa-eye"></i></a>`;
                     }
                 },
                 {

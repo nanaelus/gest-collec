@@ -15,11 +15,11 @@
                     <h5>Ajouter un type</h5>
                 </div>
                 <div class="card-body">
-                    <label class="form-label">Nom du type</label>
+                    <label class="form-label">Nom de la marque</label>
                     <input type="text" class="form-control" name="name">
                     <label class="form-label">Type du parent</label>
                     <select class="form-select" name="id_brand_parent">
-                        <option value="" selected>Aucun</option>
+                        <option value="none" selected>Aucun</option>
                         <?php foreach ($all_brands as $brand) { ?>
                             <option value="<?= $brand['id'] ; ?>"><?= $brand['name']; ?></option>
                         <?php } ?>
@@ -59,8 +59,38 @@
         </div>
     </div>
 </div>
+
+<!-- Modal -->
+<div class="modal" tabindex="-1" id="modalBrand">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modifier ma marque</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" action="<?= base_url('/admin/item/updatebrand'); ?>" id="formModal">
+                <div class="modal-body">
+                    <input type="hidden" name="id" value="">
+                    <input type="text" name="name" class="form-control">
+                    <label class="form-label">Type du parent</label>
+                    <select class="form-select" name="id_brand_parent">
+                        <?php foreach ($all_brands as $brand) { ?>
+                            <option value="<?= $brand['id'] ; ?>"><?= $brand['name']; ?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                    <input type="submit" class="btn btn-primary" value="Valider">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
     $(document).ready(function () {
+        const modalBrand = new bootstrap.Modal('#modalBrand');
         var dataTable = $('#tableBrands').DataTable({
             "responsive": true,
             "processing": true,
@@ -76,10 +106,36 @@
             },
             "columns" : [
                 {"data": 'id'},
-                {"data" : "id_brand_parent"},
-                {"data" : "name"},
-                {"data" : "slug"},
-                {"data" : "slug"},
+                {
+                    data : "id_brand_parent",
+                    render : function(data) {
+                        if (data == null) {
+                            return `<span class="id-brand-parent"></span>`;
+                        } else {
+                            return `<span class="id-brand-parent">${data}</span>`;
+                        }
+                    }
+                },
+                {
+                    data : "name",
+                    render : function(data) {
+                        return `<span class="name-brand">${data}</span>`;
+                    }
+                },
+                {
+                    data : "slug",
+                    render : function(data) {
+                        return `<span class="slug-brand">${data}</span>`;
+                    }
+                },
+                {
+                    data : 'id',
+                    sortable : false,
+                    render : function(data) {
+                        return `<a class="swal2-brand-update" id="${data}" href="<?= base_url('/admin/item/updatebrand/'); ?>${data}"><i class="fa-solid
+                        fa-pencil text-success"></i></a>`;
+                    }
+                },
                 {
                     data : 'id',
                     sortable : false,
@@ -97,7 +153,6 @@
             let id = $(this).attr("id");
             if (id==1) {
                 Swal.fire("Tu ne peux pas supprimer \"Aucune marque\" !")
-                console.log(data);
             } else {
                 $.ajax({
                     type: "GET",
@@ -106,7 +161,6 @@
                         id : id,
                     },
                     success: function (data) {
-                        console.log(data);
                         let json =JSON.parse(data)
                         let title = "Supprimer une marque"
                         let text = `Cette marque est attribruée à <b class="text-danger">${json.total}</b> objets. Êtes vous sûr de vouloir continuer ?`;
@@ -114,6 +168,39 @@
                     }
                 })
             }
+        });
+        $("body").on("click", '.swal2-brand-update', function(event) {
+            event.preventDefault();
+            modalBrand.show();
+            let id_brand = $(this).attr('id');
+            let name = $(this).closest('tr').find('.name-brand').html();
+            let id_brand_parent = $(this).closest('tr').find('.id-brand-parent').html();
+            $('.modal input[name="id"').val(id_brand);
+            $('.modal input[name="name"').val(name);
+            $('.modal select[name="id_brand_parent"').val(id_brand_parent);
         })
+        $('#formModal').on('submit', function(event) {
+            event.preventDefault();
+            let id_brand = $('.modal input[name="id"]').val();
+            let name_brand = $('.modal input[name="name"]').val();
+            let id_brand_parent = $('.modal select[name="id_brand_parent"]').val();
+            $.ajax({
+                type:"POST",
+                url : $(this).attr("action"),
+                data : {
+                    id : id_brand,
+                    name : name_brand,
+                    id_brand_parent : id_brand_parent,
+                },
+                success : function(data) {
+                    const ligne = $('#' + id_brand).closest('tr');
+                    let json = JSON.parse(data);
+                    ligne.find('.slug-brand').html(json.slug);
+                    ligne.find('.name-brand').html(json.name);
+                    ligne.find('.id-brand-parent').html(json.id_brand_parent);
+                    modalBrand.hide();
+                }
+            });
+        });
     })
 </script>

@@ -32,6 +32,7 @@
     <link href="<?= base_url('/css/style.css') ?>" rel="stylesheet">
     <link href="<?= base_url('/vendors/@coreui/chartjs/css/coreui-chartjs.css') ?>" rel="stylesheet">
     <link rel="stylesheet" href="<?= base_url('/css/toastr.min.css') ?>">
+    <link href="<?= base_url('/css/custom.css'); ?>" rel="stylesheet">
 
 
 

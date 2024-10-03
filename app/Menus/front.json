@@ -1,0 +1,14 @@
+{
+  "items": {
+    "title" : "Objets",
+    "url" : "/item",
+    "icon": "<i class=\"nav-icon fa-solid fa-boxes-stacked\"></i>",
+    "subs" : {
+      "item": {
+        "title" : "Objets",
+        "url" : "/item",
+        "icon": "<i class=\"nav-icon fa-solid fa-box-open\"></i>"
+      }
+    }
+  }
+}

@@ -80,10 +80,14 @@ abstract class BaseController extends Controller
     protected $requiredPermissions = ['collaborateur'];
     protected $toastr = true;
 
-    protected function menus()
+    protected function menus($admin)
     {
         if (! $this->menus) {
-            $this->menus = json_decode(file_get_contents(APPPATH . 'Menus/admin.json'), true);
+            if ($admin) {
+                $this->menus = json_decode(file_get_contents(APPPATH . 'Menus/admin.json'), true);
+            } else {
+                $this->menus = json_decode(file_get_contents(APPPATH . 'Menus/front.json'), true);
+            }
         }
 
         return $this->menus;
@@ -177,6 +181,7 @@ abstract class BaseController extends Controller
         header("Location: {$url}");
         exit; /** @phpstan-ignore-line */
     }
+
     /**
      * View
      * Efficient view system
@@ -203,7 +208,7 @@ abstract class BaseController extends Controller
                     'breadcrumb' => $this->breadcrumb,
                     'localmenu' => $this->menu,
                     'user' => ($this->session->user ?? null),
-                    'menus' => $this->menus(),
+                    'menus' => $this->menus($admin),
                     'title' => sprintf('%s : %s', $this->title, $this->title_prefix)
                 ]
             )
