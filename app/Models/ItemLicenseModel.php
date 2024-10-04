@@ -9,23 +9,13 @@ class ItemLicenseModel extends Model
     protected $table            = 'license';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
-    protected $returnType       = 'array';
+    protected $returnLicense       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['name', 'slug', 'id_license_parent'];
+    protected $allowedFields    = ['name','slug','id_license_parent'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
-
-    protected array $casts = [];
-    protected array $castHandlers = [];
-
-    // Dates
-    protected $useTimestamps = false;
-    protected $dateFormat    = 'datetime';
-    protected $createdField  = 'created_at';
-    protected $updatedField  = 'updated_at';
-    protected $deletedField  = 'deleted_at';
 
     // Validation
     protected $validationRules      = [];
@@ -44,11 +34,21 @@ class ItemLicenseModel extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    public function getAllLicenses()
-    {
+    public function getLicenseById($id) {
+        return $this->find($id);
+    }
+
+    public function getAllLicenses() {
         return $this->findAll();
     }
 
+    public function deleteLicense($id) {
+        return $this->delete($id);
+    }
+
+    public function getLicenseBySlug($slug) {
+        return $this->where('slug',$slug)->first();
+    }
     public function insertLicense($data) {
         if(isset($data['id_license_parent']) && empty($data['id_license_parent'])) {
             unset($data['id_license_parent']);
@@ -59,30 +59,40 @@ class ItemLicenseModel extends Model
         return $this->insert($data);
     }
 
-    public function deleteLicense($id) {
-        return $this->delete($id);
+    public function updateLicense($id,$data) {
+        if (isset($data['name'])) {
+            $data['slug'] = $this->generateUniqueSlug($data['name'], $id);
+        }
+        if ($data['id_license_parent'] == 'none') {
+            $data['id_license_parent'] = null;
+        }
+        return $this->update($id,$data);
     }
-
-    private function generateUniqueSlug($name)
-    {
-        $slug = generateSlug($name); // Utilisez la fonction du helper pour générer le slug de base
+    private function generateUniqueSlug($name, $currentId = null) {
+        $slug = generateSlug($name);
         $builder = $this->builder();
-
-        // Vérifiez si le slug existe déjà
+        // Vérifie si le slug existe déjà pour un autre enregistrement
+        if ($currentId !== null) {
+            $builder->where('id !=', $currentId);
+        }
         $count = $builder->where('slug', $slug)->countAllResults();
-
+        // Si aucun conflit, on retourne le slug
         if ($count === 0) {
             return $slug;
         }
-
-        // Si le slug existe, ajoutez un suffixe numérique pour le rendre unique
+        // Génération d'un nouveau slug unique
         $i = 1;
+        $newSlug = $slug;
         while ($count > 0) {
             $newSlug = $slug . '-' . $i;
-            $count = $builder->where('slug', $newSlug)->countAllResults();
+            $builder->where('slug', $newSlug);
+            // Ignorer l'élément en cours de modification dans la recherche
+            if ($currentId !== null) {
+                $builder->where('id !=', $currentId);
+            }
+            $count = $builder->countAllResults();
             $i++;
         }
-
         return $newSlug;
     }
 
@@ -119,16 +129,5 @@ class ItemLicenseModel extends Model
         }
 
         return $builder->countAllResults();
-    }
-
-    public function updateLicense($id, $data) {
-        if(isset($data['name'])) {
-            $data['slug'] = $this->generateUniqueSlug($data['name']);
-        }
-        return $this->update($id, $data);
-    }
-    public function getLicenseById($id)
-    {
-        return $this->find($id);
     }
 }

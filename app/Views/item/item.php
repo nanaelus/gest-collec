@@ -1,4 +1,3 @@
-
 <div class="row">
     <div class="col">
         <?php if (isset($item) && $item != null): ?>
@@ -60,7 +59,9 @@
                                 <div class="col">
                                     <div class="card p-3">
                                         <div class="d-grid gap-2">
-                                            <a href="#" class="btn btn-success"><i class="fa-solid fa-plus fa-lg"></i> Ajouter à ma collection</a>
+                                            <?php if($possede == false)  { ?>
+                                            <a href="<?= base_url('/collection/addcollection/' . $item['id']);?>" class="btn btn-success"><i class="fa-solid fa-plus fa-lg"></i> Ajouter à ma collection</a> <?php } else {?>
+                                            <a href="<?= base_url('/collection/removecollection/' . $item['id']);?>" class="btn btn-danger"><i class="fa-solid fa-minus fa-lg"></i> Retirer de ma collection</a> <?php } ?>
                                         </div>
                                     </div>
                                 </div>

@@ -10,7 +10,7 @@ class ItemModel extends Model
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
-    protected $allowedFields    = ['name','description','price', 'release_date','active','id_license','id_brand','id_type','id_default_img','created_at','updated_at', 'slug'];
+    protected $allowedFields    = ['name','slug', 'description','price', 'release_date','active','id_license','id_brand','id_type','id_default_img','created_at','updated_at'];
 
     // Dates
     protected $useTimestamps = true;
@@ -78,50 +78,49 @@ class ItemModel extends Model
         $item['medias'] = model('MediaModel')->getMediaByEntityIdAndType($item['id'], 'item');
 
         // Récupère tous les genres associés à l'item
-        $item['genres'] = model('ItemGenreItemModel')->getAllItemGenreByIdItem($item['id']);
+        $item['genres'] = model('ItemGenreItemModel')->getAllFullItemGenreByIdItem($item['id']);
 
         // Retourne toutes les informations collectées sur l'item
         return $item;
     }
 
-    public function getNameGenre() {
-        $builder = $this->db->table('item i');
-        $builder->select("g.name as genre_name");
-        $builder->join("genre_item gi", "gi.id_item = i.id");
-        $builder->join("genre g", "g.id = gi.id_genre");
-    }
+
     public function getAllItems($active = 1) {
         return $this->where('active', $active)->findAll();
     }
-    public function getAllItemsFiltered($active = 1, $data)
+
+    public function getAllItemsFiltered($data, $active = 1,$perPage = 10)
     {
-        $builder = $this->db->table('item i');
-        $builder->select("i.id, i.name, i.slug, m.file_path as default_img_file_path");
-        $builder->join('media m', 'i.id_default_img = m.id', 'left');
+        // Utilisation du Query Builder à partir du modèle
+        $this->select("item.id, item.name, item.slug, media.file_path as default_img_file_path");
+        $this->join('media', 'item.id_default_img = media.id', 'left');
+
         foreach ($data as $filter => $slug) {
             switch ($filter) {
-                case 'license' :
-                    $builder->join('license l', 'i.id_license = l.id');
-                    $builder->where('l.slug', $slug['slug']);
+                case 'license':
+                    $this->join('license', 'item.id_license = license.id');
+                    $this->where('license.slug', $slug['slug']);
                     break;
-                case 'brand' :
-                    $builder->join('brand b', 'i.id_brand = b.id');
-                    $builder->where('b.slug', $slug['slug']);
+                case 'brand':
+                    $this->join('brand', 'item.id_brand = brand.id');
+                    $this->where('brand.slug', $slug['slug']);
                     break;
-                case 'type' :
-                    $builder->join('type t', 'i.id_type = t.id');
-                    $builder->where('t.slug', $slug['slug']);
+                case 'type':
+                    $this->join('type', 'item.id_type = type.id');
+                    $this->where('type.slug', $slug['slug']);
                     break;
             }
         }
-        $builder->where('i.active', $active);
-        return $builder->get()->getResultArray();
+
+        // Filtrer les items actifs
+        $this->where('item.active', $active);
+
+        // Utilisation de la méthode paginate pour gérer les résultats paginés
+        return $this->paginate($perPage);
     }
 
     public function insertItem($data) {
-        if(isset($data['name'])) {
-            $data['slug'] = $this->generateUniqueSlug($data['name']);
-        }
+        $data['slug'] = $this->generateUniqueSlug($data['name']);
         return $this->insert($data);
     }
 
@@ -130,9 +129,6 @@ class ItemModel extends Model
     }
 
     public function updateItem($id,$data) {
-        if(isset($data['name'])) {
-            $data['slug'] = $this->generateUniqueSlug($data['name']);
-        }
         return $this->update($id,$data);
     }
 
@@ -178,27 +174,21 @@ class ItemModel extends Model
 
         return $builder->countAllResults();
     }
-
     private function generateUniqueSlug($name)
     {
-        $slug = generateSlug($name); // Utilisez la fonction du helper pour générer le slug de base
+        $slug = generateSlug($name);
         $builder = $this->builder();
-
-        // Vérifiez si le slug existe déjà
         $count = $builder->where('slug', $slug)->countAllResults();
-
         if ($count === 0) {
             return $slug;
         }
-
-        // Si le slug existe, ajoutez un suffixe numérique pour le rendre unique
         $i = 1;
         while ($count > 0) {
             $newSlug = $slug . '-' . $i;
             $count = $builder->where('slug', $newSlug)->countAllResults();
             $i++;
         }
-
         return $newSlug;
     }
+
 }

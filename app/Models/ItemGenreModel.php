@@ -9,23 +9,13 @@ class ItemGenreModel extends Model
     protected $table            = 'genre';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
-    protected $returnType       = 'array';
+    protected $returnGenre       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['name', 'slug', 'id_genre_parent'];
+    protected $allowedFields    = ['name','slug'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
-
-    protected array $casts = [];
-    protected array $castHandlers = [];
-
-    // Dates
-    protected $useTimestamps = false;
-    protected $dateFormat    = 'datetime';
-    protected $createdField  = 'created_at';
-    protected $updatedField  = 'updated_at';
-    protected $deletedField  = 'deleted_at';
 
     // Validation
     protected $validationRules      = [];
@@ -44,60 +34,45 @@ class ItemGenreModel extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    public function getAllGenres()
-    {
-        return $this->findAll();
-    }
-
-    public function getGenreById($id)
-    {
+    public function getGenreById($id) {
         return $this->find($id);
     }
 
+    public function getAllGenres() {
+        return $this->findAll();
+    }
+
+    public function deleteGenre($id) {
+        return $this->delete($id);
+    }
+
+    public function getGenreBySlug($slug) {
+        return $this->where('slug',$slug)->first();
+    }
     public function insertGenre($item) {
-        if (isset($item['id_genre_parent']) && empty($item['id_genre_parent'])) {
+        if(isset($item['id_genre_parent']) && empty($item['id_genre_parent'])) {
             unset($item['id_genre_parent']);
         }
         if (isset($item['name'])) {
-            // Générer et vérifier le slug unique
             $item['slug'] = $this->generateUniqueSlug($item['name']);
         }
         return $this->insert($item);
     }
 
-    public function updateGenre($id, $data) {
-        if(isset($data['name'])) {
-            $data['slug'] = $this->generateUniqueSlug($data['name']);
-        }
-        return $this->update($id, $data);
-    }
-
-    public function deleteGenre($id)
-    {
-        return $this->delete($id);
-    }
-
-
     private function generateUniqueSlug($name)
     {
-        $slug = generateSlug($name); // Utilisez la fonction du helper pour générer le slug de base
+        $slug = generateSlug($name);
         $builder = $this->builder();
-
-        // Vérifiez si le slug existe déjà
         $count = $builder->where('slug', $slug)->countAllResults();
-
         if ($count === 0) {
             return $slug;
         }
-
-        // Si le slug existe, ajoutez un suffixe numérique pour le rendre unique
         $i = 1;
         while ($count > 0) {
             $newSlug = $slug . '-' . $i;
             $count = $builder->where('slug', $newSlug)->countAllResults();
             $i++;
         }
-
         return $newSlug;
     }
 

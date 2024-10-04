@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-md-3">
-        <div class="card vh-100">
+        <div class="card h-100">
             <div class="card-header">Mes filtres</div>
             <div class="card-body">
                 <form method="get" action="<?= base_url('item'); ?>">
@@ -25,6 +25,9 @@
                             <option value="<?= $type['slug']; ?>"><?= $type['name']; ?></option>
                         <?php endforeach; ?>
                     </select>
+                    <?php if (isset($data['page'])) { ?>
+                        <input type="hidden" value="<?= $data['page']; ?>" name="page">
+                    <?php }?>
                     <div class="d-grid">
                         <button class="btn btn-primary" type="submit">Valider mes filtres</button>
                     </div>
@@ -33,8 +36,29 @@
         </div>
     </div>
     <div class="col-md-9">
-        <div class="card vh-100">
-            <div class="card-header">Liste des objets</div>
+        <div class="card h-100">
+            <div class="card-header">Liste des objets
+                <?php
+                if (isset($data)) {
+                    $filtre_text = "( ";
+                    foreach ($data as $filter => $slug) {
+                        switch ($filter) {
+                            case 'license' :
+                                $filtre_text .= "Licence : ".$slug['slug'] ." ";
+                                break;
+                            case 'brand' :
+                                $filtre_text .= "Marques : ".$slug['slug'] ." ";
+                                break;
+                            case 'type' :
+                                $filtre_text .= "Types : ".$slug['slug'] ." ";
+                                break;
+                        }
+                    }
+                    $filtre_text .= ")";
+                }
+                echo $filtre_text;
+                ?>
+            </div>
             <div class="card-body">
                 <div class="row row-cols-md-4 g-2">
                     <?php foreach($items as $item) : ?>
@@ -53,6 +77,13 @@
 
                         </div>
                     <?php endforeach; ?>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="pagination">
+                            <?= $pager->links('default', 'bootstrap_pagination'); ?>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -75,13 +106,43 @@
                 <pre>
                   <?php
                   if (isset($data)) {
+                      echo "DATA<br>";
                       print_r($data);
                   }?>
                 </pre>
                 <pre>
                   <?php
                   if (isset($items)) {
+                      echo "ITEMS<br>";
                       print_r($items);
+                  }?>
+                </pre>
+                <pre>
+                  <?php
+                  if (isset($brands)) {
+                      echo "BRANDS<br>";
+                      print_r($brands);
+                  }?>
+                </pre>
+                <pre>
+                  <?php
+                  if (isset($licenses)) {
+                      echo "LICENSES<br>";
+                      print_r($licenses);
+                  }?>
+                </pre>
+                <pre>
+                  <?php
+                  if (isset($types)) {
+                      echo "TYPES<br>";
+                      print_r($types);
+                  }?>
+                </pre>
+                <pre>
+                  <?php
+                  if (isset($genres)) {
+                      echo "GENRES<br>";
+                      print_r($genres);
                   }?>
                 </pre>
             </div>

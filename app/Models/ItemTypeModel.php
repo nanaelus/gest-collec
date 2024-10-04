@@ -12,11 +12,10 @@ class ItemTypeModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['name', 'slug', 'id_type_parent'];
+    protected $allowedFields    = ['name','slug','id_type_parent'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
-
 
     // Validation
     protected $validationRules      = [];
@@ -35,38 +34,64 @@ class ItemTypeModel extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    public function insertType(array $item)
-    {
-        if(isset($item['id_type_parent']) && empty($item['id_type_parent'])){
-            unset($item['id_type_parent']);
+    public function getTypeById($id) {
+        return $this->find($id);
+    }
+
+    public function getAllTypes() {
+        return $this->findAll();
+    }
+
+    public function deleteType($id) {
+        return $this->delete($id);
+    }
+
+    public function getTypeBySlug($slug) {
+        return $this->where('slug',$slug)->first();
+    }
+    public function insertType($item) {
+        if(isset($item['id_license_parent']) && (empty($item['id_license_parent']) || $item['id_license_parent'] == 'none')) {
+            unset($item['id_license_parent']);
         }
         if (isset($item['name'])) {
-            // Générer et vérifier le slug unique
             $item['slug'] = $this->generateUniqueSlug($item['name']);
         }
         return $this->insert($item);
     }
-
-    private function generateUniqueSlug($name)
-    {
-        $slug = generateSlug($name); // Utilisez la fonction du helper pour générer le slug de base
+    public function updateType($id, $data) {
+        if (isset($data['name'])) {
+            $data['slug'] = $this->generateUniqueSlug($data['name'],$id);
+        }
+        if ($data['id_type_parent'] == 'none') {
+            $data['id_type_parent'] = null;
+        }
+        return $this->update($id, $data);
+    }
+    private function generateUniqueSlug($name, $currentId = null) {
+        $slug = generateSlug($name);
         $builder = $this->builder();
-
-        // Vérifiez si le slug existe déjà
+        // Vérifie si le slug existe déjà pour un autre enregistrement
+        if ($currentId !== null) {
+            $builder->where('id !=', $currentId);
+        }
         $count = $builder->where('slug', $slug)->countAllResults();
-
+        // Si aucun conflit, on retourne le slug
         if ($count === 0) {
             return $slug;
         }
-
-        // Si le slug existe, ajoutez un suffixe numérique pour le rendre unique
+        // Génération d'un nouveau slug unique
         $i = 1;
+        $newSlug = $slug;
         while ($count > 0) {
             $newSlug = $slug . '-' . $i;
-            $count = $builder->where('slug', $newSlug)->countAllResults();
+            $builder->where('slug', $newSlug);
+            // Ignorer l'élément en cours de modification dans la recherche
+            if ($currentId !== null) {
+                $builder->where('id !=', $currentId);
+            }
+            $count = $builder->countAllResults();
             $i++;
         }
-
         return $newSlug;
     }
 
@@ -103,21 +128,5 @@ class ItemTypeModel extends Model
         }
 
         return $builder->countAllResults();
-    }
-    public function getAllTypes() {
-        return $this->findAll();
-    }
-    public function getTypeById($id) {
-        return $this->find($id);
-    }
-
-    public function updateType($id, $data) {
-        if(isset($data['name'])) {
-            $data['slug'] = $this->generateUniqueSlug($data['name']);
-        }
-    return $this->update($id, $data);
-    }
-    public function deleteType($id) {
-        return $this->delete($id);
     }
 }

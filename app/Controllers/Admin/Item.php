@@ -209,6 +209,16 @@ class Item extends BaseController
         }
         $this->redirect('/admin/item/type');
     }
+
+    public function postupdatetype() {
+        $data = $this->request->getPost();
+        if ($data['id_type_parent'] == "") {
+            unset($data['id_type_parent']);
+        }
+        $itm = Model('ItemTypeModel');
+        $itm->updateType($data['id'], $data);
+        return json_encode($itm->getTypeById($data['id']));
+    }
     public function getbrand(){
         $this->title="Gestion des Marques";
         $this->addBreadcrumb('Objets','/admin/item');
@@ -311,18 +321,17 @@ class Item extends BaseController
     }
     public function postupdatelicense(){
         $data = $this->request->getPost();
-        print_r($data);
         if ($data['id_license_parent'] == "") {
             unset($data['id_license_parent']);
         }
-        $ilm = Model('ItemLicenseModel');
-        $ilm->updateLicense($data['id'], $data);
-        return json_encode($ilm->getLicenseById($data['id']));
+        $ibm = Model('ItemLicenseModel');
+        $ibm->updateLicense($data['id'], $data);
+        return json_encode($ibm->getLicenseById($data['id']));
     }
     public function postcreatelicense() {
         $data = $this->request->getPost();
-        $ibm = Model('ItemLicenseModel');
-        if ($ibm->insertLicense($data)) {
+        $ilm = Model('ItemLicenseModel');
+        if ($ilm->insertLicense($data)) {
             $this->success('Licence ajouté');
         } else {
             $this->error('Licence non ajouté');
@@ -365,14 +374,5 @@ class Item extends BaseController
 
     public function gettest(){
         return $this->view('dev-test');
-    }
-    public function postupdatetype() {
-        $data = $this->request->getPost();
-        if($data['id_type_parent'] == "") {
-            unset($data['id_type_parent']);
-        }
-        $itm = Model('ItemTypeModel');
-        $itm->updateType($data['id'], $data);
-        return json_encode($itm->getTypeById($data['id']));
     }
 }

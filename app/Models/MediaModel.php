@@ -8,27 +8,19 @@ class MediaModel extends Model
 {
     protected $table = 'media';
     protected $primaryKey = 'id';
-    protected $allowedFields = ['file_path', 'entity_id', 'entity_type', 'created_at', 'mime_type'];
-
+    protected $allowedFields = ['file_path','mime_type','entity_id', 'entity_type', 'created_at'];
     protected $useTimestamps = false;
 
     public function getAllMedias($limit = null, $offset = 0) {
         return $this->findAll($limit, $offset);
     }
-
-    public function getMediaById($id) {
+    public function getMediaById($id = null) {
+        if ($id == null) {
+            return false;
+        }
         return $this->find($id);
     }
-
-    public function getAllMediasByEntityType($entityType, $limit = null, $offset = 0) {
-        return $this->where('entity_type', $entityType)->findAll($limit, $offset);
-    }
-
-    public function getMediaByEntityIdAndType($entityId, $entityType) {
-        return $this->where('entity_type',$entityType)->where('entity_id',$entityId)->findAll();
-    }
-
-    public function getDeleteMedia($id) {
+    public function deleteMedia($id) {
         // Récupérer les informations du fichier depuis la base de données
         $fichier = $this->find($id);
         if ($fichier) {
@@ -44,5 +36,17 @@ class MediaModel extends Model
             }
         }
         return false; // Le fichier n'a pas été trouvé
+    }
+
+    public function getAllMediasByEntityType($entityType, $limit = null, $offset = 0) {
+        return $this->where('entity_type', $entityType)->findAll($limit, $offset);
+    }
+
+    public function getMediaByEntityIdAndType($entityId,$entityType) {
+        return $this->where('entity_type', $entityType)->where('entity_id', $entityId)->findAll();
+    }
+
+    public function getFirstMediaByEntityIdAndType($entityId,$entityType) {
+        return $this->where('entity_type', $entityType)->where('entity_id', $entityId)->first();
     }
 }
