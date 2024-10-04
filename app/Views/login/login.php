@@ -70,7 +70,7 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-1">
-                <img src="/assets/brand/logo-bleu.svg">
+                <a href="<?= base_url(); ?>"><img src="/assets/brand/logo-bleu.svg"></a>
             </div>
         </div>
         <?php if (isset($error)) { ?>

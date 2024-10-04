@@ -1,4 +1,4 @@
-<form action="/admin/item/<?= isset($item['id']) ? 'updateitem' : 'createitem'; ?>" method="POST" enctype="multipart/form-data">
+<form action="/admin/item/<?= isset($item['id']) ?'updateitem' : 'createitem' ?>" method="POST" enctype="multipart/form-data">
     <?php if (isset($item['id'])): ?>
         <input type="hidden" name="id" value="<?= htmlspecialchars($item['id']) ?>">
     <?php endif; ?>
@@ -6,16 +6,24 @@
     <div class="row">
         <div class="col">
             <div class="card">
-                <div class="card-header d-flex align-items-center">
-                    <input type="text" class="form-control me-4" placeholder="Titre de l'objet" name="name" value="<?= isset($item['name']) ? htmlspecialchars($item['name']) : '' ?>" required>
+                <div class="card-header d-flex  align-items-center">
+                    <input type="text" class="form-control me-4" placeholder="Titre de l'objet" name="name" value="<?= isset
+                    ($item['name']) ? htmlspecialchars($item['name']) : '' ?>" required>
                     <div class="form-check form-switch">
-                        <input class="form-check-input" name="active" value="1" type="checkbox" role="switch" id="switcActif" <?= (isset($item['active']) && $item['active'] == 1) ? 'checked' : '' ?>>
-                        <label class="form-check-label" for="switcActif">Actif</label>
+                        <input class="form-check-input" type="checkbox" role="switch" id="switchActif" name="active" value="1" <?= (isset($item['active']) && $item['active'] == 1) ? "checked" : ""; ?> >
+                        <label class="form-check-label" for="switchActif">Actif</label>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <?php if(isset($item)) { ?>
+    <div class="row">
+        <div class="col">
+            <a class="ms-4" target="_blank" href="<?= base_url("item/" . $item['slug']); ?>" title="Voir l'objet"><?= base_url("item/" . $item['slug']); ?></a>
+        </div>
+    </div>
+    <?php } ?>
     <div class="row mt-3">
         <!-- START: Central -->
         <div class="col-md-9">
@@ -50,6 +58,28 @@
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="image-pane" role="tabpanel" aria-labelledby="image-tab" tabindex="0">
+                                    <?php if (isset($medias)) : ?>
+                                        <div class="row medias">
+                                            <?php foreach ($medias as $media): ?>
+                                                <div class="col-4 col-md-2 mb-4 d-flex align-items-center position-relative media" data-id="<?= $media['id']; ?>">
+                                                    <div class="media-mask bg-black bg-opacity-75 d-none rounded">
+                                                        <div class="d-flex flex-column justify-content-center h-100 text-center p-2">
+                                                            <div class="btn btn-danger mb-3 media-delete">
+                                                                <i class="fa fa-solid fa-trash"></i> Supprimer
+                                                            </div>
+                                                            <div class="btn btn-secondary media-edit">
+                                                                <i class="fa fa-solid fa-pencil"></i> Editer
+                                                            </div>
+                                                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
+                                            <?= $media['entity_type'] ?>
+                                        </span>
+                                                        </div>
+                                                    </div>
+                                                    <img class="img-thumbnail" src="<?= base_url($media['file_path']) ?>" ?>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    <?php endif; ?>
                                     <div class="row">
                                         <div class="col">
                                             <input class="form-control" type='file' name='images[]' multiple>
@@ -83,7 +113,10 @@
                                     <div class="row row-cols-4" id="genre-list">
                                         <?php
                                         foreach ($genres as $genre) {
-                                            $isChecked = isset($item['genres']) && in_array($genre['id'], $item['genres']) ? 'checked' : '';
+                                            if (isset($genre_item)) {
+                                                $genre_ids = array_column($genre_item, 'id_genre');
+                                            }
+                                            $isChecked = isset($genre_ids) && in_array($genre['id'], $genre_ids) ? 'checked' : '';
                                             ?>
                                             <div class="col genre-item">
                                                 <input class="form-check-input" type="checkbox" value="<?= htmlspecialchars($genre['id']) ?>" id="chk-<?= htmlspecialchars($genre['slug']) ?>" name="genres[]" <?= $isChecked ?>>
@@ -111,19 +144,19 @@
                             <div class="row">
                                 <div class="col">
                                     <div class="card">
-                                    <div class="card-body">
-                                        <div class="d-grid">
-                                            <button type="submit" class="btn btn-primary">Valider</button>
+                                        <div class="card-body">
+                                            <div class="d-grid">
+                                                <button type="submit" class="btn btn-primary">Valider</button>
+                                            </div>
                                         </div>
+                                        <?php if(isset($item)) : ?>
+                                            <div class="card-footer">
+                                                <small>Date de création : <?= date('d/m/Y h:i',strtotime($item['created_at'])); ?></small><br>
+                                                <small>Date de modification : <?= date('d/m/Y h:i',strtotime($item['updated_at'])); ?></small>
+                                            </div>
+                                        <?php endif; ?>
                                     </div>
 
-                                    <?php if(isset($item)) { ?>
-                                    <div class="card-footer">
-                                        <small>Date de création : <?= date( 'd/m/Y h:i', strtotime($item['created_at'])); ?></small><br>
-                                        <small>Date de modification : <?= $item['updated_at']; ?></small>
-                                    </div>
-                                    <?php } ?>
-                                </div>
                                 </div>
                             </div>
                             <div class="row mt-3">
@@ -170,7 +203,6 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
                     </div>
                 </div>
             </div>
@@ -266,6 +298,49 @@ function hasSelectedChild($node, $selectedId) {
             toolbar: 'undo redo | formatselect | ' +
                 'bold italic link forecolor backcolor removeformat | alignleft aligncenter ' +
                 'alignright alignjustify | bullist numlist outdent indent | ' +' fullscreen  preview code'
+        });
+
+        $('.medias').on('mouseenter mouseleave','.media', function(){
+            $(this).find('.media-mask').toggleClass('d-none');
+        });
+        $('.medias').on('click','.media-delete', function(e){
+            let media = $(this).closest('.media');
+            let id = media.data("id");
+            let url = "<?= base_url('/admin/media/delete/') ?>";
+            url = url + id;
+            Swal.fire({
+                title: "Êtes-vous sûr?",
+                text: "L'image sera définitivement supprimée !",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Oui !",
+                cancelButtonText: "Annuler"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "GET",
+                        url: url,
+                        success: function (data) {
+                            if (data == "true") {
+                                media.remove();
+                                Swal.fire({
+                                    title: "Supprimé!",
+                                    text: "Le fichier à bien été supprimé.",
+                                    icon: "success"
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: "Pas supprimé!",
+                                    text: "Le fichier n'a pas été supprimé.",
+                                    icon: "error"
+                                });
+                            }
+                        }
+                    });
+                }
+            });
         });
     });
 </script>
