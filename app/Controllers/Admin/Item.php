@@ -70,12 +70,10 @@ class Item extends BaseController
                     }
                 }
             }
-            $first_img = Model("MediaModel")->getFirstMediaByEntityIdAndType($id_item,'item');
-            if($first_img) {
-
-                Model("ItemModel")->updateItem($id_item, ['id_default_img' => $first_img['id']]);
+            $first_image = model('MediaModel')->getFirstMediaByEntityIdAndType($id_item,'item');
+            if($first_image){
+                $im->updateItem($id_item, ['id_default_img' => $first_image['id']]);
             }
-
             $this->success("Objet ajouté");
         } else {
             $this->error('Objet non ajouté');
@@ -84,6 +82,9 @@ class Item extends BaseController
     }
     public function postupdateitem() {
         $data = $this->request->getPost();
+        if(!isset($data['active'])) {
+            $data['active'] = 0;
+        }
         $im = model('ItemModel');
         $id_item = $data['id'];
         if ($id_item) {

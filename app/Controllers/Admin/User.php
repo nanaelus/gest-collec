@@ -174,4 +174,7 @@ class User extends BaseController
         ];
         return $this->response->setJSON($result);
     }
+    public function gettest() {
+        return $this->view('dev-test.php');
+    }
 }
