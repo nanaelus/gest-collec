@@ -1,5 +1,7 @@
+<?php //var_dump($comments); ?>
 <div class="row">
     <div class="col">
+        <form method="POST" action="/item/createcomment">
         <?php if (isset($item) && $item != null): ?>
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
@@ -47,12 +49,24 @@
                                             <div class="text">
                                                 <?= $item['description']; ?>
                                             </div>
+                                                <input type="text" class="form-control" name="comment" placeholder="Votre commentaire">
+                                                <input type="hidden" value="<?= $item['id'] ;?>" name="entity_id">
+                                                <input type="hidden" value="<?= $user->id ;?>" name="id_user">
+                                                <button type="submit" class="btn btn-primary">Poster</button>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col">Commentaires :
+                                                <ul>
+                                                <?php foreach($comments as $comment) : ?>
+                                                <li class="row"><?= $comment['comment']; ?></li>
+                                                <?php endforeach; ?>
+                                                </ul>
+                                            </div>
                                         </div>
                                         <!--END: DESCRIPTION -->
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                         <div class="col-md-3">
                             <div class="row">
@@ -111,6 +125,7 @@
                 L'objet que vous souhaitez consulter n'existe pas où n'est pas accessible.
             </div>
         <?php endif; ?>
+        </form>
     </div>
 </div>
 <!-- START: OFFCANVAS -->
