@@ -77,6 +77,7 @@
 <script>
     $(document).ready(function () {
         const modalGenre = new bootstrap.Modal('#modalGenre');
+        var baseUrl = "<?= base_url(); ?>";
         var dataTable = $('#tableGenres').DataTable({
             "responsive": true,
             "processing": true,
@@ -115,7 +116,7 @@
                     data : 'id',
                     sortable : false,
                     render : function(data) {
-                        return `<a class="swal2-genre-delete" id="${data}"  swal2-title="Etes vous sur de vouloir supprimer ce genre ?" swal2-text="" href="/admin/item/deletegenre/${data}"><i class="fa-solid fa-trash"></i></a>`;
+                        return `<a class="swal2-genre-delete" id="${data}"  swal2-title="Etes vous sur de vouloir supprimer ce genre ?" swal2-text="" href=${baseUrl} + "/admin/item/deletegenre/${data}"><i class="fa-solid fa-trash"></i></a>`;
                     }
                 },
             ]

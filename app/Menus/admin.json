@@ -36,6 +36,11 @@
         "title": "Licences",
         "url" : "/admin/item/license",
         "icon": "<i class=\"nav-icon fa-solid fa-tag\"></i>"
+      },
+      "comments" : {
+        "title": "Commentaires",
+        "url" : "/admin/item/comments",
+        "icon": "<i class=\"nav-icon fa-solid fa-tag\"></i>"
       }
     }
   },

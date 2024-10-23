@@ -89,9 +89,8 @@ class ItemModel extends Model
         return $this->where('active', $active)->findAll();
     }
 
-    public function getAllItemsFiltered($data, $active = 1,$perPage = 10)
+    public function getAllItemsFiltered($data, $active = 1, $perPage = 8)
     {
-        // Utilisation du Query Builder à partir du modèle
         $this->select("item.id, item.name, item.slug, media.file_path as default_img_file_path");
         $this->join('media', 'item.id_default_img = media.id', 'left');
 
@@ -109,6 +108,14 @@ class ItemModel extends Model
                     $this->join('type', 'item.id_type = type.id');
                     $this->where('type.slug', $slug['slug']);
                     break;
+                case 'username' :
+                    $this->join('collection c', 'item.id = c.id_item');
+                    $this->join('TableUser u', 'c.id_user = u.id');
+                    $this->where('u.username', $slug);
+                    break;
+                case 'search':
+                    $this->like('item.name', $slug);
+                    break;
             }
         }
 
@@ -117,6 +124,18 @@ class ItemModel extends Model
 
         // Utilisation de la méthode paginate pour gérer les résultats paginés
         return $this->paginate($perPage);
+    }
+
+    public function searchItemsByName($searchValue, $limit = 10)
+    {
+        return $this->select('id, name, slug')
+            ->like('name', $searchValue)
+            ->limit($limit)
+            ->findAll();
+    }
+
+    public function getSlugById($id_item) {
+        return $this->select('slug')->where('id', $id_item)->get()->getRow()->slug;
     }
 
     public function insertItem($data) {
@@ -190,5 +209,4 @@ class ItemModel extends Model
         }
         return $newSlug;
     }
-
 }

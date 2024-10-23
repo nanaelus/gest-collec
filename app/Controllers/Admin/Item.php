@@ -12,17 +12,18 @@ class Item extends BaseController
     public function getindex($id = null){
         //Si j'ai un ID je suis en édition
         if ($id) {
+            $comments = model('CommentModel')->getAllCommentsByItem($id);
             $genres = model('ItemGenreModel')->getAllGenres();
             $types = model('ItemTypeModel')->getAllTypes();
             $licenses = model('ItemLicenseModel')->getAllLicenses();
             $brands = model('ItemBrandModel')->getAllBrands();
             //Si mon ID est égale à "new" je suis en création
             if ($id == "new") {
-                return $this->view('admin/item/item.php', ['genres' => $genres, 'types' => $types, 'licenses' => $licenses, 'brands'=> $brands], true);
+                return $this->view('admin/item/item.php', ['genres' => $genres, 'types' => $types, 'licenses' => $licenses, 'brands'=> $brands, "comments" => $comments], true);
             }
             $item = model('ItemModel')->getItem($id);
             if ($item) {
-                return $this->view('admin/item/item.php', ['genres' => $genres, 'types' => $types, 'licenses' => $licenses, 'brands'=> $brands, 'item' => $item, 'medias' => model('MediaModel')->getMediaByEntityIdAndType($id,'item'), 'genre_item' => model('ItemGenreItemModel')->getAllItemGenreByIdItem($id)], true);
+                return $this->view('admin/item/item.php', ['genres' => $genres, 'types' => $types, 'licenses' => $licenses, 'brands'=> $brands, 'item' => $item, 'medias' => model('MediaModel')->getMediaByEntityIdAndType($id,'item'), 'genre_item' => model('ItemGenreItemModel')->getAllItemGenreByIdItem($id), 'comments' => $comments], true);
             } else {
                 $this->error('L\'ID n\'est pas valide');
                 $this->redirect('/admin/item');
@@ -70,12 +71,10 @@ class Item extends BaseController
                     }
                 }
             }
-            $first_img = Model("MediaModel")->getFirstMediaByEntityIdAndType($id_item,'item');
-            if($first_img) {
-
-                Model("ItemModel")->updateItem($id_item, ['id_default_img' => $first_img['id']]);
+            $first_image = model('MediaModel')->getFirstMediaByEntityIdAndType($id_item,'item');
+            if($first_image){
+                $im->updateItem($id_item, ['id_default_img' => $first_image['id']]);
             }
-
             $this->success("Objet ajouté");
         } else {
             $this->error('Objet non ajouté');
@@ -84,6 +83,9 @@ class Item extends BaseController
     }
     public function postupdateitem() {
         $data = $this->request->getPost();
+        if(!isset($data['active'])) {
+            $data['active'] = 0;
+        }
         $im = model('ItemModel');
         $id_item = $data['id'];
         if ($id_item) {
@@ -338,16 +340,26 @@ class Item extends BaseController
         }
         $this->redirect('/admin/item/license');
     }
+
+    public function getcomments() {
+        $this->title="Gestion des Commentaires";
+        $this->addBreadcrumb('Objets','/admin/item');
+        $this->addBreadcrumb('Commentaires','');
+        return $this->view('admin/item/comment/index.php', [], true);
+    }
     public function postsearchdatatable()
     {
         $model_name = $this->request->getPost('model');
         $model = model($model_name);
-
         // Paramètres de pagination et de recherche envoyés par DataTables
         $draw        = $this->request->getPost('draw');
         $start       = $this->request->getPost('start');
         $length      = $this->request->getPost('length');
         $searchValue = $this->request->getPost('search')['value'];
+
+        $type = $this->request->getPost('type') ?? 'item';
+        $custom_filter = $this->request->getPost('filter') ?? null;
+        $custom_filter_value = $this->request->getPost('filter_value') ?? null;
 
         // Obtenez les informations sur le tri envoyées par DataTables
         $orderColumnIndex = $this->request->getPost('order')[0]['column'] ?? 0;
@@ -355,13 +367,13 @@ class Item extends BaseController
         $orderColumnName = $this->request->getPost('columns')[$orderColumnIndex]['data'] ?? 'id';
 
         // Obtenez les données triées et filtrées
-        $data = $model->getPaginated($start, $length, $searchValue, $orderColumnName, $orderDirection);
+        $data = $model->getPaginated($start, $length, $searchValue, $orderColumnName, $orderDirection, $type, $custom_filter, $custom_filter_value);
 
         // Obtenez le nombre total de lignes sans filtre
-        $totalRecords = $model->getTotal();
+        $totalRecords = $model->getTotal($type, $custom_filter, $custom_filter_value);
 
         // Obtenez le nombre total de lignes filtrées pour la recherche
-        $filteredRecords = $model->getFiltered($searchValue);
+        $filteredRecords = $model->getFiltered($searchValue, $type, $custom_filter, $custom_filter_value);
 
         $result = [
             'draw'            => $draw,
@@ -370,9 +382,5 @@ class Item extends BaseController
             'data'            => $data,
         ];
         return $this->response->setJSON($result);
-    }
-
-    public function gettest(){
-        return $this->view('dev-test');
     }
 }

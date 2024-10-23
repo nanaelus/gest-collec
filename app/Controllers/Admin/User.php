@@ -19,7 +19,8 @@ class User extends BaseController
             }
             $utilisateur = $um->getUserById($id);
             if ($utilisateur) {
-                return $this->view("/admin/user/user", ["utilisateur" => $utilisateur, "permissions" => $permissions ], true);
+                $comments = model('CommentModel')->getCommentsByUserId($utilisateur['id']);
+                return $this->view("/admin/user/user", ["utilisateur" => $utilisateur, "permissions" => $permissions, 'comments' =>$comments ], true);
             } else {
                 $this->error("L'ID de l'utilisateur n'existe pas");
                 $this->redirect("/admin/user");
@@ -173,5 +174,8 @@ class User extends BaseController
             'data'            => $data,
         ];
         return $this->response->setJSON($result);
+    }
+    public function gettest() {
+        return $this->view('dev-test.php');
     }
 }

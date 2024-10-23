@@ -23,7 +23,7 @@ class UserModel extends Model
 
     // Validation
     protected $validationRules = [
-        'username' => 'required|min_length[3]|max_length[100]',
+        'username' => 'required|min_length[3]|is_unique[TableUser.username,id,{id}]|max_length[100]',
         'email'    => 'required|valid_email|is_unique[TableUser.email,id,{id}]',
         'password' => 'required|min_length[8]',
         'id_permission' => 'required|is_natural_no_zero',

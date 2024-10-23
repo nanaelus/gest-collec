@@ -29,10 +29,10 @@
             "serverSide": true,
             "pageLength": 10,
             "language": {
-                url: '<?= base_url("/js/datatable/datatable-2.1.4-fr-FR.json") ?>',
+                url: baseUrl + "/js/datatable/datatable-2.1.4-fr-FR.json",
             },
             "ajax": {
-                "url": "<?= base_url('/admin/item/searchdatatable'); ?>",
+                "url": baseUrl + "/admin/item/searchdatatable",
                 "type": "POST",
                 "data" : { 'model' : 'ItemModel'}
             },

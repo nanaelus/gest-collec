@@ -11,4 +11,7 @@ class Home extends BaseController
     public function getindex() {
         $this->redirect('/admin/dashboard');
     }
+    public function gettest() {
+        return $this->view('dev-test.php');
+    }
 }

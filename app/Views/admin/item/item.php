@@ -45,6 +45,11 @@
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link" id="genre-tab" data-bs-toggle="tab" data-bs-target="#genre-pane" type="button" role="tab" aria-controls="genre" aria-selected="false">Genre</button>
                                 </li>
+                                <?php if(isset($item)) { ?>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="comment-tab" data-bs-toggle="tab" data-bs-target="#comment-pane" type="button" role="tab" aria-controls="comment" aria-selected="false">Commentaires</button>
+                                </li>
+                                <?php } ?>
                             </ul>
 
                             <!-- Tab panes -->
@@ -64,21 +69,26 @@
                                                 <div class="col-4 col-md-2 mb-4 d-flex align-items-center position-relative media" data-id="<?= $media['id']; ?>">
                                                     <div class="media-mask bg-black bg-opacity-75 d-none rounded">
                                                         <div class="d-flex flex-column justify-content-center h-100 text-center p-2">
-                                                            <div class="btn btn-danger mb-3 media-delete">
+                                                            <div class="btn btn-danger mb-3 media-delete <?= ($media['id'] == $item['id_default_img']) ? 'd-none' : '' ;?>">
                                                                 <i class="fa fa-solid fa-trash"></i> Supprimer
                                                             </div>
-                                                            <div class="btn btn-secondary media-edit">
-                                                                <i class="fa fa-solid fa-pencil"></i> Editer
+                                                            <div class="btn btn-warning media-default-img <?= ($media['id'] == $item['id_default_img']) ? 'd-none' : '' ;?>">
+                                                                <i class="fa fa-solid fa-crown"></i> Principale
                                                             </div>
-                                                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
+                                                            <span class="position-absolute top-0 start-20 translate-middle badge rounded-pill bg-primary">
                                             <?= $media['entity_type'] ?>
                                         </span>
                                                         </div>
                                                     </div>
                                                     <img class="img-thumbnail" src="<?= base_url($media['file_path']) ?>" ?>
+                                                        <span class="position-absolute top-0 start-200 translate-middle badge rounded-pill bg-warning <?= ($media['id'] == $item['id_default_img']) ? 'd-block' : 'd-none' ;?>">
+                                                            <i class="fa-solid fa-crown">
+                                                            </i>
+                                                        </span>
                                                 </div>
                                             <?php endforeach; ?>
                                         </div>
+                                        <input class="id-default" type="hidden" value="<?= $item['id_default_img'] ?>" name="id_default_img">
                                     <?php endif; ?>
                                     <div class="row">
                                         <div class="col">
@@ -126,6 +136,24 @@
                                             </div>
                                         <?php }
                                         ?>
+                                    </div>
+                                </div>
+                                <!-- Pane Comments -->
+                                <div class="tab-pane fade" id="comment-pane" role="tabpanel" aria-labelledby="comment-tab" tabindex="0">
+                                    <div class="row">
+                                        <table class="table table-sm table-hover" id="tableComments" style="width:100%">
+                                            <thead>
+                                            <tr>
+                                                <th>ID commentaire</th>
+                                                <th>Commentaire</th>
+                                                <th>Nom de l'objet</th>
+                                                <th>Nom de l'auteur</th>
+                                                <th>Date du commentaire</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
@@ -342,5 +370,46 @@ function hasSelectedChild($node, $selectedId) {
                 }
             });
         });
+        $(".medias").on('click', '.media-default-img' ,function(event) {
+            event.preventDefault();
+            let new_path = $(this).closest('.media');
+            let id_img = new_path.data("id");
+            let old_id = $('input[name="id_default_img"]').val();
+            let old_path = $('.media[data-id="' + old_id + '"]');
+            console.log(id_img);
+            if (id_img != old_id) {
+            $('input[name="id_default_img"]').val(id_img);
+            $(new_path).find('.media-delete').addClass('d-none');
+            $(new_path).find('.media-default-img').addClass('d-none');
+            $(new_path).find('.badge.bg-warning').removeClass('d-none');
+
+            $(old_path).find('.media-delete').removeClass('d-none');
+            $(old_path).find('.media-default-img').removeClass('d-none');
+            $(old_path).find('.badge.bg-warning').addClass('d-none');
+            }
+        })
+        var baseUrl = "<?= base_url(); ?>";
+        var dataTable = $("#tableComments").DataTable({
+            "reponsive" : true,
+            "processing" : true,
+            "serverSide" : true,
+            "pageLength" : 10,
+            "language" : {
+                url : baseUrl + "js/datatable/datatable-2.1.4-fr-FR.json",
+                "emptyTable" : "Aucune commentaire trouvé pour cet objet",
+            },
+            "ajax" : {
+                "url" : baseUrl + "admin/item/searchdatatable",
+                'type' : "POST",
+                'data' : {'model' : 'CommentModel', 'filter' : 'item', 'filter_value': '<?= isset($item['id']) ? $item['id'] : ""; ?>'}
+            },
+            "columns" : [
+                {"data" : "id"},
+                {"data" : 'content'},
+                {"data" : 'item_name'},
+                {"data" : "username"},
+                {"data" : "date"},
+            ]
+        })
     });
 </script>

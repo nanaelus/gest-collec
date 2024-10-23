@@ -1,35 +1,19 @@
-<div class="row">
-    <div class="col">
-        <div class="card">
-            <div class="card-header"><h3>Ma Collection</h3></div>
-            <div class="card-body">
-                <table class="table-hover table-sm table-striped table">
-                <thead>
-                    <tr>
-                        <th>Nom</th>
-                        <th>Marque</th>
-                        <th>Licence</th>
-                        <th>Voir</th>
-                        <th>Supprimer</th>
-                    </tr>
-                </thead>
-                    <tbody>
-                    <?php foreach ($possede as$p) { ?>
-                     <tr>
-                         <td><?= $p['name']; ?></td>
-                         <td><?= $p['brand']; ?></td>
-                         <td><?= $p['license']; ?></td>
-                         <td>
-                             <a href="<?= base_url('/item/' . $item['slug']) ;?>"><i class="fa-solid fa-eye"></i></a>
-                         </td>
-                         <td>
-                             <a href="<?= base_url('/collection/removecollection/' . $item['id']);?>"><i class="fa-solid fa-trash"></i></a>
-                         </td>
-                         <td><?= $p['']; ?></td>
-                     </tr>
-                    <?php } ?>
-                    </tbody>
-            </div>
-        </div>
-    </div>
+<div id="toggle" style="cursor: pointer;">
+    <i class="fa-toggle-on text-success fa-solid fa-xl" id="icon"></i>
 </div>
+
+<script>
+document.getElementById('toggle').addEventListener('click', function() {
+const icon = document.getElementById('icon');
+
+if (icon.classList.contains('fa-toggle-on')) {
+// Changer en "off"
+icon.classList.remove('fa-toggle-on', 'text-success');
+icon.classList.add('fa-toggle-off', 'text-danger');
+} else {
+// Changer en "on"
+icon.classList.remove('fa-toggle-off', 'text-danger');
+icon.classList.add('fa-toggle-on', 'text-success');
+}
+});
+</script>
