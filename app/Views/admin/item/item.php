@@ -45,6 +45,11 @@
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link" id="genre-tab" data-bs-toggle="tab" data-bs-target="#genre-pane" type="button" role="tab" aria-controls="genre" aria-selected="false">Genre</button>
                                 </li>
+                                <?php if(isset($item)) { ?>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="comment-tab" data-bs-toggle="tab" data-bs-target="#comment-pane" type="button" role="tab" aria-controls="comment" aria-selected="false">Commentaires</button>
+                                </li>
+                                <?php } ?>
                             </ul>
 
                             <!-- Tab panes -->
@@ -131,6 +136,24 @@
                                             </div>
                                         <?php }
                                         ?>
+                                    </div>
+                                </div>
+                                <!-- Pane Comments -->
+                                <div class="tab-pane fade" id="comment-pane" role="tabpanel" aria-labelledby="comment-tab" tabindex="0">
+                                    <div class="row">
+                                        <table class="table table-sm table-hover" id="tableComments" style="width:100%">
+                                            <thead>
+                                            <tr>
+                                                <th>ID commentaire</th>
+                                                <th>Commentaire</th>
+                                                <th>Nom de l'objet</th>
+                                                <th>Nom de l'auteur</th>
+                                                <th>Date du commentaire</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
@@ -364,6 +387,29 @@ function hasSelectedChild($node, $selectedId) {
             $(old_path).find('.media-default-img').removeClass('d-none');
             $(old_path).find('.badge.bg-warning').addClass('d-none');
             }
+        })
+        var baseUrl = "<?= base_url(); ?>";
+        var dataTable = $("#tableComments").DataTable({
+            "reponsive" : true,
+            "processing" : true,
+            "serverSide" : true,
+            "pageLength" : 10,
+            "language" : {
+                url : baseUrl + "js/datatable/datatable-2.1.4-fr-FR.json",
+                "emptyTable" : "Aucune commentaire trouvé pour cet objet",
+            },
+            "ajax" : {
+                "url" : baseUrl + "admin/item/searchdatatable",
+                'type' : "POST",
+                'data' : {'model' : 'CommentModel', 'filter' : 'item', 'filter_value': '<?= isset($item['id']) ? $item['id'] : ""; ?>'}
+            },
+            "columns" : [
+                {"data" : "id"},
+                {"data" : 'content'},
+                {"data" : 'item_name'},
+                {"data" : "username"},
+                {"data" : "date"},
+            ]
         })
     });
 </script>

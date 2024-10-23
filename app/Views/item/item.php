@@ -1,7 +1,5 @@
-<?php //var_dump($comments); ?>
 <div class="row">
     <div class="col">
-        <form method="POST" action="/item/createcomment">
         <?php if (isset($item) && $item != null): ?>
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
@@ -49,33 +47,77 @@
                                             <div class="text">
                                                 <?= $item['description']; ?>
                                             </div>
-                                                <input type="text" class="form-control" name="comment" placeholder="Votre commentaire">
-                                                <input type="hidden" value="<?= $item['id'] ;?>" name="entity_id">
-                                                <input type="hidden" value="<?= $user->id ;?>" name="id_user">
-                                                <button type="submit" class="btn btn-primary">Poster</button>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col">Commentaires :
-                                                <ul>
-                                                <?php foreach($comments as $comment) : ?>
-                                                <li class="row"><?= $comment['comment']; ?></li>
-                                                <?php endforeach; ?>
-                                                </ul>
-                                            </div>
                                         </div>
                                         <!--END: DESCRIPTION -->
                                     </div>
+                                    <!--START: COMMENTS -->
+                                    <div class="row" id="comments">
+                                        <div class="col p-3 d-flex justify-content-between">
+                                            <h3>Commentaires</h3><span> <?= $comments_number; ?> avis.</span>
+                                        </div>
+                                    </div>
+                                    <div class="row" id="comment-area">
+                                        <!--START: DEPOSER COMMENTS -->
+                                        <div class="col p-3">
+                                            <form action="<?= base_url('/comment/createitemcomment'); ?>" method="POST">
+                                                <input type="hidden" name="entity_id" value="<?= $item['id']; ?>">
+                                                <div class="form-floating">
+                                                    <textarea class="form-control" placeholder="Laissez un commentaire" id="floatingTextarea" name="content"></textarea>
+                                                    <label for="floatingTextarea">Commentaire</label>
+                                                </div>
+                                                <div class="d-flex justify-content-end mt-3">
+                                                    <button type="submit" class="btn btn-primary">Poster mon commentaire</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <!--END: DEPOSER COMMENTS -->
+                                    </div>
+                                    <div class="row">
+                                        <div class="col p-3">
+                                            <?php foreach($comments as $comment) : ?>
+                                                <div class="card mb-3 comment" data-id="<?= $comment['id']; ?>">
+                                                    <div class="card-header d-flex justify-content-between">
+                                                        <div>
+                                                            <img class="img-thumbnail me-2" width="25px" src="<?= $comment['profile_file_path'] ? base_url($comment['profile_file_path']) : base_url('/assets/img/avatars/1.jpg') ?>"><span class="username"><?= $comment['username']; ?></span>
+                                                            <div class="btn btn-primary btn-sm btn-comment-response">Répondre</div>
+                                                        </div>
+                                                        <div>
+                                                            <small class="text-body-secondary">Le
+                                                                <?php
+                                                                $date = new DateTime($comment['date']);
+                                                                echo $date->format('d/m/Y H:i:s'); ?></small>
+                                                        </div>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <?= $comment['content']; ?>
+                                                    </div>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    </div>
+                                    <!--END: COMMENTS -->
                                 </div>
                             </div>
+
                         </div>
                         <div class="col-md-3">
                             <div class="row">
                                 <div class="col">
                                     <div class="card p-3">
                                         <div class="d-grid gap-2">
-                                            <?php if($possede == false)  { ?>
-                                            <a href="<?= base_url('/collection/addcollection/' . $item['id']);?>" class="btn btn-success"><i class="fa-solid fa-plus fa-lg"></i> Ajouter à ma collection</a> <?php } else {?>
-                                            <a href="<?= base_url('/collection/removecollection/' . $item['id']);?>" class="btn btn-danger"><i class="fa-solid fa-minus fa-lg"></i> Retirer de ma collection</a> <?php } ?>
+                                            <?php if ($possede == false) : ?>
+                                                <a href="<?= base_url("/collection/addcollection/" . $item['id']) ?>" class="btn
+                                btn-success"><i class="fa-solid
+                                fa-plus
+                                fa-lg"></i> Ajouter
+                                                    à ma collection</a>
+                                            <?php else : ?>
+                                                <a href="<?= base_url("/collection/removecollection/" . $item['id']) ?>" class="btn
+                                btn-danger"><i class="fa-solid
+                                fa-minus
+                                fa-lg"></i> Retirer
+                                                    de ma collection</a>
+                                            <?php endif; ?>
                                         </div>
                                     </div>
                                 </div>
@@ -125,7 +167,6 @@
                 L'objet que vous souhaitez consulter n'existe pas où n'est pas accessible.
             </div>
         <?php endif; ?>
-        </form>
     </div>
 </div>
 <!-- START: OFFCANVAS -->
@@ -225,46 +266,52 @@
 </style>
 <script>
     $(document).ready(function(){
-        $(document).ready(function() {
-            // Initialisation du carousel principal
-            var mainCarousel = new Splide('#main-carousel', {
-                type      : 'fade',  // Utilise un effet de fondu pour la transition entre les slides
-                height    : '400px',
-                width     : '100%',  // Assure que le carousel utilise toute la largeur disponible
-                pagination: false,    // Active la pagination si souhaité
-                arrows    : false,    // Garde les flèches
-                cover     : false,   // Pour éviter des comportements non désirés avec cover
-                rewind    : true,    // Revient au début à la fin
-                perPage   : 1,       // Affiche une image par page
-                breakpoints: {       // Permet d'ajuster le comportement selon la taille de l'écran
-                    768: {
-                        height: '300px',  // Ajuste la hauteur pour les écrans plus petits
-                    },
+        // Initialisation du carousel principal
+        var mainCarousel = new Splide('#main-carousel', {
+            type      : 'fade',  // Utilise un effet de fondu pour la transition entre les slides
+            height    : '400px',
+            width     : '100%',  // Assure que le carousel utilise toute la largeur disponible
+            pagination: false,    // Active la pagination si souhaité
+            arrows    : false,    // Garde les flèches
+            cover     : false,   // Pour éviter des comportements non désirés avec cover
+            rewind    : true,    // Revient au début à la fin
+            perPage   : 1,       // Affiche une image par page
+            breakpoints: {       // Permet d'ajuster le comportement selon la taille de l'écran
+                768: {
+                    height: '300px',  // Ajuste la hauteur pour les écrans plus petits
                 },
-            }).mount();
+            },
+        }).mount();
 
-            // Initialisation du carousel de thumbnails
-            var thumbnailCarousel = new Splide('#thumbnail-carousel', {
-                fixedWidth  : 80,    // Largeur fixe des thumbnails
-                fixedHeight : 80,    // Hauteur fixe des thumbnails
-                isNavigation: true,  // Permet la navigation via ce carousel
-                gap         : 10,    // Espace entre les thumbnails
-                focus       : 'center',
-                pagination  : true,
-                cover       : true,
-                arrows      : true,  // Ajout des flèches de navigation
-                rewind      : true,
-                breakpoints : {
-                    600: {
-                        fixedWidth : 60,
-                        fixedHeight: 60,
-                    },
+        // Initialisation du carousel de thumbnails
+        var thumbnailCarousel = new Splide('#thumbnail-carousel', {
+            fixedWidth  : 80,    // Largeur fixe des thumbnails
+            fixedHeight : 80,    // Hauteur fixe des thumbnails
+            isNavigation: true,  // Permet la navigation via ce carousel
+            gap         : 10,    // Espace entre les thumbnails
+            focus       : 'center',
+            pagination  : true,
+            cover       : true,
+            arrows      : true,  // Ajout des flèches de navigation
+            rewind      : true,
+            breakpoints : {
+                600: {
+                    fixedWidth : 60,
+                    fixedHeight: 60,
                 },
-            }).mount();
+            },
+        }).mount();
 
-            // Synchronisation des deux carousels
-            mainCarousel.sync(thumbnailCarousel);
-        });
+        // Synchronisation des deux carousels
+        mainCarousel.sync(thumbnailCarousel);
 
+        $('.btn-comment-response').on('click', function(e) {
+            let username = $(this).closest('.comment').find('.username').html();
+            let id_comment = $(this).closest('.comment').data('id');
+            $('.form-floating').find('label').html("Répondre à " + username);
+            $('#comment-area form input[name="id_comment_parent"]').remove();
+            $('#comment-area form').prepend('<input type="hidden" name="id_comment_parent" value="' + id_comment + '">');
+
+        })
     })
 </script>

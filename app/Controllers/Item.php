@@ -36,7 +36,8 @@ class Item extends BaseController
                 $cm = model('CommentModel');
                 // L'objet existe, on le récupère en entier
                 $item = $im->getFullItemBySlug($slug);
-                $all_comments = $cm->getAllCommentsByEntitySlug($slug, $item['id']);
+                $comments_number = $cm->getTotalByIdAndActive($item['id']);
+                $all_comments = $cm->getAllCommentsByItem($item['id']);
                 // Vérification si l'utilisateur est connecté et s'il est admin
                 $isAdmin = isset($this->session->user) && $this->session->user->isAdmin();
                 // Si l'objet est inactif et que l'utilisateur n'est pas admin, on met $item à null
@@ -52,8 +53,9 @@ class Item extends BaseController
                 // L'objet n'existe pas
                 $item = null;
                 $possede = false;
+                $all_comments= null;
             }
-            return $this->view('item/item',['item' => $item, 'possede' => $possede, 'comments' => $all_comments]);
+            return $this->view('item/item',['item' => $item, 'possede' => $possede, 'comments' => $all_comments, 'comments_number' => $comments_number]);
         }
     }
     public function getautocompleteItems() {
@@ -75,7 +77,7 @@ class Item extends BaseController
     public function postcreatecomment() {
         $data = $this->request->getPost();
         $cm = model('CommentModel');
-        if($cm->createComment($data)) {
+        if($cm->createItemComment($data)) {
             $this->success('Commentaire ajouté');
         } else {
             $this->error('Erreur lors de l\'ajout du commentaire');

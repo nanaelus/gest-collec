@@ -113,7 +113,7 @@ class ItemModel extends Model
                     $this->join('TableUser u', 'c.id_user = u.id');
                     $this->where('u.username', $slug);
                     break;
-                case 'serach':
+                case 'search':
                     $this->like('item.name', $slug);
                     break;
             }
@@ -132,6 +132,10 @@ class ItemModel extends Model
             ->like('name', $searchValue)
             ->limit($limit)
             ->findAll();
+    }
+
+    public function getSlugById($id_item) {
+        return $this->select('slug')->where('id', $id_item)->get()->getRow()->slug;
     }
 
     public function insertItem($data) {
@@ -205,5 +209,4 @@ class ItemModel extends Model
         }
         return $newSlug;
     }
-
 }

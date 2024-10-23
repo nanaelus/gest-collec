@@ -9,7 +9,7 @@
 </div>
 <div class="row">
     <div class="col-md-4">
-        <form action="admin/item/createbrand" method="POST">
+        <form action="<?= base_url('admin/item/createbrand'); ?>" method="POST">
             <div class="card">
                 <div class="card-header">
                     <h5>Ajouter un type</h5>
@@ -91,6 +91,7 @@
 <script>
     $(document).ready(function () {
         const modalBrand = new bootstrap.Modal('#modalBrand');
+        var baseUrl = <?= base_url(); ?>
         var dataTable = $('#tableBrands').DataTable({
             "responsive": true,
             "processing": true,
@@ -140,7 +141,7 @@
                     data : 'id',
                     sortable : false,
                     render : function(data) {
-                        return `<a class="swal2-brand" id="${data}" swal2-title="Etes vous sur de vouloir supprimer cette marque ?" swal2-text="" href="/admin/item/deletebrand/${data}"><i class="fa-solid fa-trash"></i></a>`;
+                        return `<a class="swal2-brand" id="${data}" swal2-title="Etes vous sur de vouloir supprimer cette marque ?" swal2-text="" href= ${baseUrl} + "/admin/item/deletebrand/${data}"><i class="fa-solid fa-trash"></i></a>`;
                     }
                 },
             ]
