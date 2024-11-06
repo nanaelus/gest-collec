@@ -19,19 +19,19 @@ class Database extends Config
      * Lets you choose which connection group to
      * use if no other is specified.
      */
-    public string $defaultGroup = 'default';
+    public string $defaultGroup = ENVIRONMENT;
 
     /**
      * The default database connection.
      *
      * @var array<string, mixed>
      */
-    public array $default = [
+    public array $development = [
         'DSN'          => '',
         'hostname'     => 'localhost',
-        'username'     => '',
-        'password'     => '',
-        'database'     => '',
+        'username'     => 'root',
+        'password'     => 'root',
+        'database'     => 'gest-collec',
         'DBDriver'     => 'MySQLi',
         'DBPrefix'     => '',
         'pConnect'     => false,
@@ -53,12 +53,12 @@ class Database extends Config
      *
      * @var array<string, mixed>
      */
-    public array $tests = [
+    public array $production = [
         'DSN'         => '',
-        'hostname'    => '127.0.0.1',
-        'username'    => '',
-        'password'    => '',
-        'database'    => ':memory:',
+        'hostname'    => 'localhost',
+        'username'    => 'vipa0880_aanel',
+        'password'    => 'M^V;Ilx^F$}6',
+        'database'    => 'vipa0880_gestcollec_anael',
         'DBDriver'    => 'SQLite3',
         'DBPrefix'    => 'db_',  // Needed to ensure we're working correctly with prefixes live. DO NOT REMOVE FOR CI DEVS
         'pConnect'    => false,
