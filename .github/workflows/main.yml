@@ -3,28 +3,28 @@ name: Release Workflow
 on:
   release:
     types: [created]
-
+    
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
+    
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-
+      
     - name: Install Composer dependencies
       run: composer install --no-dev
 
     - name: Modify .env
       run: |
-         sed -i 's/ENVIRONMENT = development/ENVIRONMENT = production/g' .env
-         cat .env
-         
+        sed -i 's/ENVIRONMENT = development/ENVIRONMENT = production/g' .env
+        cat .env
+        
     - name: Modify App.php
       run: |
-         sed -i "s|\$baseUrl = '.*';|\$baseUrl = '${{secrets.BASE_URL }}';|g" app/Config/App.php
-         cat app/Config/App.php
-         
+        sed -i "s|\$baseURL = '.*';|\$baseURL = '${{ secrets.BASE_URL }}';|g" app/Config/App.php
+        cat app/Config/App.php
+
     - name: Create .htaccess for root directory
       run: |
         echo '<IfModule mod_rewrite.c>' > .htaccess
@@ -69,17 +69,14 @@ jobs:
         echo '<IfModule !mod_rewrite.c>' >> public/.htaccess
         echo '    ErrorDocument 404 index.php' >> public/.htaccess
         echo '</IfModule>' >> public/.htaccess
-
+      
     - name: Deploy to FTP
       uses: SamKirkland/FTP-Deploy-Action@v4.3.5
       with:
         server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
-        password: $ {{ secrets.FTP_PASSWORD }}
+        password: ${{ secrets.FTP_PASSWORD }}
         server-dir: ${{ secrets.URL_PREFIX }}/
-
-    - name: Wait for files to deploy
-      run: sleep 60
 
     - name: Run Migrations
       run: |
