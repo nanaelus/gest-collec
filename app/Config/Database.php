@@ -29,8 +29,8 @@ class Database extends Config
     public array $development = [
         'DSN'          => '',
         'hostname'     => 'localhost',
-        'username'     => '',
-        'password'     => '',
+        'username'     => 'root',
+        'password'     => 'root',
         'database'     => 'gest-collec',
         'DBDriver'     => 'MySQLi',
         'DBPrefix'     => '',
