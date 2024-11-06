@@ -22,7 +22,7 @@ jobs:
          
     - name: Modify App.php
       run: |
-         sed -i "s|\$baseUrl = '.*';|\$baseUrl = '${{secrets.BASE_URL ]]';|g" app/Config/App.php
+         sed -i "s|\$baseUrl = '.*';|\$baseUrl = '${{secrets.BASE_URL }}';|g" app/Config/App.php
          cat app/config/App.php
          
     - name: Create .htaccess for root directory
