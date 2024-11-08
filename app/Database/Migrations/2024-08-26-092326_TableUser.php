@@ -48,7 +48,7 @@ class TableUser extends Migration
         ]);
 
         $this->forge->addKey('id', true);
-        $this->forge->addForeignKey('id_permission', 'tableUserPermission', 'id', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('id_permission', 'TableUserPermission', 'id', 'CASCADE', 'CASCADE');
         $this->forge->createTable('TableUser');
     }
 
