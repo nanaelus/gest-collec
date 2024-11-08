@@ -4,7 +4,7 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class TableGenre extends Migration
+class TableGenreItem extends Migration
 {
     public function up()
     {
@@ -15,11 +15,13 @@ class TableGenre extends Migration
                 'unsigned'       => true,
                 'auto_increment' => true,
             ],
-            'name' => [
-                'type'       => 'VARCHAR',
-                'constraint' => '100',
+            'id_item' => [
+                'type'           => 'INT',
+                'constraint'     => 11,
+                'unsigned'       => true,
+                'default'        => null
             ],
-            'id_genre_parent' => [
+            'id_genre' => [
                 'type'           => 'INT',
                 'constraint'     => 11,
                 'unsigned'       => true,
@@ -27,13 +29,16 @@ class TableGenre extends Migration
             ]
         ]);
 
-        $this->forge->addKey('id', true);
-        $this->forge->addForeignKey('id_genre_parent', 'genre', 'id','CASCADE','SET NULL');
-        $this->forge->createTable('genre');
+        $this->forge->addPrimaryKey('id');
+
+        $this->forge->addForeignKey('id_genre', 'genre', 'id','CASCADE','CASCADE');
+        $this->forge->addForeignKey('id_item', 'item', 'id','CASCADE','CASCADE');
+
+        $this->forge->createTable('genre_item');
     }
 
     public function down()
     {
-        $this->forge->dropTable('genre');
+        $this->forge->dropTable('genre_item');
     }
 }
