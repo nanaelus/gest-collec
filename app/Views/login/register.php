@@ -85,7 +85,7 @@
                     <div class="card-body p-4">
                         <h1>S'inscrire</h1>
                         <p class="text-body-secondary">Créer votre compte</p>
-                        <form action="/Login/Register" method="POST">
+                        <form action="<?= base_url('/Login/Register'); ?>" method="POST">
                             <div class="input-group mb-3">
                                 <span class="input-group-text">
                                     <svg class="icon">

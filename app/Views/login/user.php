@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col">
-        <form action="<?= isset($user) ? "/admin/user/update" : "/admin/user/create" ?>" method="POST"  enctype="multipart/form-data">
+        <form action="<?= isset($user) ? base_url('/admin/user/update') : base_url("/admin/user/create") ?>" method="POST"  enctype="multipart/form-data">
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title">
