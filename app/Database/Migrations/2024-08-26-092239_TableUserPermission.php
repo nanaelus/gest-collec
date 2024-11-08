@@ -32,14 +32,11 @@ class TableUserPermission extends Migration
         ];
         $this->db->table('TableUserPermission')->insertBatch($data);
 
-        $this->db->query('ALTER TABLE TableUser ADD CONSTRAINT fk_id_permission FOREIGN KEY (id_permission) REFERENCES TableUserPermission(id) ON DELETE CASCADE ON UPDATE CASCADE');
-
 
     }
 
     public function down()
     {
-        $this->db->query('ALTER TABLE TableUser DROP FOREIGN KEY fk_id_permission');
         $this->forge->dropTable('TableUserPermission');
     }
 }
