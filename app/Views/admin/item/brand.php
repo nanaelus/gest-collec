@@ -141,7 +141,7 @@
                     data : 'id',
                     sortable : false,
                     render : function(data) {
-                        return `<a class="swal2-brand" id="${data}" swal2-title="Etes vous sur de vouloir supprimer cette marque ?" swal2-text="" href= ${baseUrl} + "/admin/item/deletebrand/${data}"><i class="fa-solid fa-trash"></i></a>`;
+                        return `<a class="swal2-brand" id="${data}" swal2-title="Etes vous sur de vouloir supprimer cette marque ?" swal2-text="" href="${baseUrl}/admin/item/deletebrand/${data}"><i class="fa-solid fa-trash"></i></a>`;
                     }
                 },
             ]

@@ -1,7 +1,7 @@
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h4>Liste des rôles</h4>
-        <a href="/admin/userpermission/new"><i class="fa-solid fa-circle-plus"></i></a>
+        <a href="<?= base_url('/admin/userpermission/new'); ?>"><i class="fa-solid fa-circle-plus"></i></a>
     </div>
     <div class="card-body">
         <table id="tablePermission" class="table table-hover">
@@ -23,6 +23,7 @@
 
 <script>
     $(document).ready(function () {
+        let baseUrl = "<?= base_url(); ?>"
         var dataTable = $('#tablePermission').DataTable({
             "responsive": true,
             "processing": true,
@@ -43,14 +44,14 @@
                     data : 'id',
                     sortable : false,
                     render : function(data) {
-                        return `<a href="/admin/userpermission/${data}"><i class="fa-solid fa-pencil"></i></a>`;
+                        return `<a href="${baseUrl}/admin/userpermission/${data}"><i class="fa-solid fa-pencil"></i></a>`;
                     }
                 },
                 {
                     data : 'id',
                     sortable : false,
                     render : function(data) {
-                        return `<a href="/admin/userpermission/delete/${data}"><i class="fa-solid fa-trash"></i></a>`;
+                        return `<a href="${baseUrl}/admin/userpermission/delete/${data}"><i class="fa-solid fa-trash"></i></a>`;
                     }
                 }
             ]

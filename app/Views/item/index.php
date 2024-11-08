@@ -84,7 +84,7 @@ $controller = strtolower(basename(str_replace('\\', '/', $router->controllerName
                                     $img_src = !empty($item['default_img_file_path']) ? base_url($item['default_img_file_path']) : base_url('assets/img/full.jpg');
                                     ?>
                                     <a href="<?= base_url('item/' . $item['slug']) ?>">
-                                        <img src="<?= $img_src; ?>" class="card-img-top" alt="...">
+                                        <img src="<?= base_url($img_src); ?>" class="card-img-top" alt="...">
                                     </a>
                                     <div class="card-body">
                                         <div class="card-title"><?= $item['name']; ?></div>

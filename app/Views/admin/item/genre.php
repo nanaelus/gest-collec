@@ -9,7 +9,7 @@
 </div>
 <div class="row">
     <div class="col-md-4">
-        <form action="admin/item/creategenre" method="POST">
+        <form action="<?= base_url('admin/item/creategenre'); ?>" method="POST">
             <div class="card">
                 <div class="card-header">
                     <h5>Ajouter un Genre</h5>
@@ -116,7 +116,7 @@
                     data : 'id',
                     sortable : false,
                     render : function(data) {
-                        return `<a class="swal2-genre-delete" id="${data}"  swal2-title="Etes vous sur de vouloir supprimer ce genre ?" swal2-text="" href=${baseUrl} + "/admin/item/deletegenre/${data}"><i class="fa-solid fa-trash"></i></a>`;
+                        return `<a class="swal2-genre-delete" id="${data}"  swal2-title="Etes vous sur de vouloir supprimer ce genre ?" swal2-text="" href="${baseUrl}/admin/item/deletegenre/${data}"><i class="fa-solid fa-trash"></i></a>`;
                     }
                 },
             ]

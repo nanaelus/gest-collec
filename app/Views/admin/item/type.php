@@ -9,7 +9,7 @@
 </div>
 <div class="row">
     <div class="col-md-4">
-        <form action="/admin/item/createtype" method="POST">
+        <form action="<?= base_url('/admin/item/createtype'); ?>" method="POST">
             <div class="card">
                 <div class="card-header">
                     <h5>Ajouter un type</h5>

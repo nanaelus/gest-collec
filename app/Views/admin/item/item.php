@@ -1,4 +1,4 @@
-<form action="/admin/item/<?= isset($item['id']) ?'updateitem' : 'createitem' ?>" method="POST" enctype="multipart/form-data">
+<form action="<?= isset($item['id']) ? base_url('/admin/item/updateitem') : base_url('/admin/item/createitem') ?>" method="POST" enctype="multipart/form-data">
     <?php if (isset($item['id'])): ?>
         <input type="hidden" name="id" value="<?= htmlspecialchars($item['id']) ?>">
     <?php endif; ?>

@@ -1,7 +1,7 @@
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h4>Liste des commentaires</h4>
-        <a href="/admin/item/new"><i class="fa-solid fa-circle-plus"></i></a>
+        <a href="<?= base_url('/admin/item/new'); ?>"><i class="fa-solid fa-circle-plus"></i></a>
     </div>
     <div class="card-body">
         <table class="table table-sm table-hover" id="tableComments">

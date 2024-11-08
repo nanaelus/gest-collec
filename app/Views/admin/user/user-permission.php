@@ -2,7 +2,7 @@
 <div class="container">
     <div class="row">
         <div class="col">
-            <form action="<?= isset($permissions) ? "/admin/userpermission/update" : "/admin/userpermission/create" ; ?> "method="POST">
+            <form action="<?= isset($permissions) ? base_url("/admin/userpermission/update") : base_url("/admin/userpermission/create"); ?>" method="POST">
                 <div class="card">
                     <div class="mb-3">
                     <label class="form-label" >Nom du rôle</label>
