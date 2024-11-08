@@ -64,7 +64,7 @@ class Database extends Config
         'username'    => 'vipa0880_aanel',
         'password'    => 'M^V;Ilx^F$}6',
         'database'    => 'vipa0880_gestcollec_anael',
-        'DBDriver'    => 'SQLite3',
+        'DBDriver'    => 'MySQLi',
         'DBPrefix'    => '',  // Needed to ensure we're working correctly with prefixes live. DO NOT REMOVE FOR CI DEVS
         'pConnect'    => false,
         'DBDebug'     => true,
