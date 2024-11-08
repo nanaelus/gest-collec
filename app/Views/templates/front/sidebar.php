@@ -11,7 +11,7 @@
                     if (!isset($menu['subs'])) { ?>
                         <li class="nav-item <?= ($localmenu === $km ? 'active' : '') ?>"
                             id="menu_<?= $km ?>">
-                            <a class="nav-link" href="<?= $menu['url'] ?>">
+                            <a class="nav-link" href="<?= base_url($menu['url']) ?>">
                                 <?php if (isset($menu['icon'])) { echo $menu['icon']; }
                                 else { ?><svg class="nav-icon"><span class="bullet bullet-dot"></svg><?php } ?>
                                 <?= $menu['title'] ?>
@@ -26,7 +26,7 @@
                                 <?php
                                 foreach($menu['subs'] as $ksm => $smenu) {
                                     if (isset($smenu['require']) && ! $user->check($smenu['require'])) { continue; } ?>
-                                    <li id="menu_<?= $ksm ?>"><a class="dropdown-item" href="<?= $smenu['url'] ?>">
+                                    <li id="menu_<?= $ksm ?>"><a class="dropdown-item" href="<?= base_url($smenu['url']) ?>">
                                             <?php if (isset($smenu['icon'])) echo $smenu['icon']; ?>
                                             <?= $smenu['title'] ?></a></li>
                                 <?php } ?>
@@ -46,9 +46,9 @@
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li class="p-2"><img class="img-thumbnail mx-auto d-block" height="80px" src="<?= base_url($user->getProfileImage()); ?>"></li>
-                        <li><a class="dropdown-item" href="/admin/user/<?= $user->id; ?>"><i class="fa-solid fa-pencil me-2"></i>Mon profil</a></li>
-                        <li><a class="dropdown-item" href="/collection/<?= $user->username; ?>"><i class="fa-solid fa-eye me-2"></i>Ma collection</a></li>
-                        <li><a class="dropdown-item" href="/login/logout"><i class="fa-solid fa-right-from-bracket me-2"></i>Déconnexion</a></li>
+                        <li><a class="dropdown-item" href="<?= base_url('/admin/user/' . $user->id); ?>"><i class="fa-solid fa-pencil me-2"></i>Mon profil</a></li>
+                        <li><a class="dropdown-item" href="/collection/<?= base_url($user->username); ?>"><i class="fa-solid fa-eye me-2"></i>Ma collection</a></li>
+                        <li><a class="dropdown-item" href="<?= base_url('/login/logout'); ?>"><i class="fa-solid fa-right-from-bracket me-2"></i>Déconnexion</a></li>
                     </ul>
                 </li>
             </div>

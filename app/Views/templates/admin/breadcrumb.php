@@ -2,7 +2,7 @@
     <div class="container-fluid border-bottom px-4">
         <button class="header-toggler" type="button" onclick="coreui.Sidebar.getInstance(document.querySelector('#sidebar')).toggle()" style="margin-inline-start: -14px;">
             <svg class="icon icon-lg">
-                <use xlink:href="/vendors/@coreui/icons/svg/free.svg#cil-menu"></use>
+                <use xlink:href="<?= base_url('/vendors/@coreui/icons/svg/free.svg#cil-menu'); ?>"></use>
             </svg>
         </button>
         <ul class="header-nav">
@@ -12,28 +12,28 @@
             <li class="nav-item dropdown">
                 <button class="btn btn-link nav-link py-2 px-2 d-flex align-items-center" type="button" aria-expanded="false" data-coreui-toggle="dropdown">
                     <svg class="icon icon-lg theme-icon-active">
-                        <use xlink:href="/vendors/@coreui/icons/svg/free.svg#cil-contrast"></use>
+                        <use xlink:href="<?= base_url('/vendors/@coreui/icons/svg/free.svg#cil-contrast'); ?>"></use>
                     </svg>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" style="--cui-dropdown-min-width: 8rem;">
                     <li>
                         <button class="dropdown-item d-flex align-items-center" type="button" data-coreui-theme-value="light">
                             <svg class="icon icon-lg me-3">
-                                <use xlink:href="/vendors/@coreui/icons/svg/free.svg#cil-sun"></use>
+                                <use xlink:href="<?= base_url('/vendors/@coreui/icons/svg/free.svg#cil-sun'); ?>"></use>
                             </svg>Light
                         </button>
                     </li>
                     <li>
                         <button class="dropdown-item d-flex align-items-center" type="button" data-coreui-theme-value="dark">
                             <svg class="icon icon-lg me-3">
-                                <use xlink:href="/vendors/@coreui/icons/svg/free.svg#cil-moon"></use>
+                                <use xlink:href="<?= base_url('/vendors/@coreui/icons/svg/free.svg#cil-moon'); ?>"></use>
                             </svg>Dark
                         </button>
                     </li>
                     <li>
                         <button class="dropdown-item d-flex align-items-center active" type="button" data-coreui-theme-value="auto">
                             <svg class="icon icon-lg me-3">
-                                <use xlink:href="/vendors/@coreui/icons/svg/free.svg#cil-contrast"></use>
+                                <use xlink:href="<?= base_url('/vendors/@coreui/icons/svg/free.svg#cil-contrast'); ?>"></use>
                             </svg>Auto
                         </button>
                     </li>
@@ -48,8 +48,8 @@
                 </button>
                 <ul class="dropdown-menu">
                     <li class="p-2"><img class="img-thumbnail mx-auto d-block" height="80px" src="<?= base_url($user->getProfileImage()); ?>"></li>
-                    <li><a class="dropdown-item" href="/admin/user/<?= $user->id; ?>">Modifier mon compte</a></li>
-                    <li><a class="dropdown-item" href="/login/logout">Se deconnecter</a></li>
+                    <li><a class="dropdown-item" href="<?= base_url('/admin/user/' . $user->id); ?>">Modifier mon compte</a></li>
+                    <li><a class="dropdown-item" href="<?= base_url('/login/logout'); ?>">Se deconnecter</a></li>
                 </ul>
             </li>
         </ul>
@@ -58,12 +58,12 @@
         <div class="container-fluid px-4">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb my-0">
-                    <li class="breadcrumb-item"><span><a href="home"</span>
+                    <li class="breadcrumb-item"><span><a href="<?= base_url('home'); ?>"</span>
                     </li>
                     <?php foreach ($breadcrumb as $bitem) { ?>
                         <li class="breadcrumb-item">
                             <?php if ($bitem['url'] !== "") { ?>
-                                <a href="<?= $bitem['url'] ?>" class=""><?= $bitem['text'] ?></a>
+                                <a href="<?= base_url($bitem['url']) ?>" class=""><?= $bitem['text'] ?></a>
                             <?php } else { ?>
                                 <?= $bitem['text'] ?>
                             <?php } ?>
