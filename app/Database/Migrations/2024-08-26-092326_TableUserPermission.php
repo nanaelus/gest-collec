@@ -4,7 +4,7 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class TableUserPermission extends Migration
+class TableUser extends Migration
 {
     public function up()
     {
@@ -15,31 +15,44 @@ class TableUserPermission extends Migration
                 'unsigned'       => true,
                 'auto_increment' => true,
             ],
-            'name' => [
+            'username' => [
                 'type'       => 'VARCHAR',
                 'constraint' => '100',
+            ],
+            'email' => [
+                'type'       => 'VARCHAR',
+                'constraint' => '100',
+                'unique'     => true,
+            ],
+            'password' => [
+                'type'       => 'VARCHAR',
+                'constraint' => '255',
+            ],
+            'id_permission' => [
+                'type'       => 'INT',
+                'constraint' => 11,
+                'unsigned'   => true,
+            ],
+            'created_at' => [
+                'type'       => 'DATETIME',
+                'null'       => true,
+            ],
+            'updated_at' => [
+                'type'       => 'DATETIME',
+                'null'       => true,
+            ],
+            'deleted_at' => [
+                'type'       => 'DATETIME',
+                'null'       => true,
             ],
         ]);
 
         $this->forge->addKey('id', true);
-        $this->forge->createTable('TableUserPermission');
-
-        // Insérer les 3 permissions par défaut
-        $data = [
-            ['name' => 'Administrateur'],
-            ['name' => 'Collaborateur'],
-            ['name' => 'Utilisateur'],
-        ];
-        $this->db->table('TableUserPermission')->insertBatch($data);
-
-        $this->db->query('ALTER TABLE TableUser ADD CONSTRAINT fk_id_permission FOREIGN KEY (id_permission) REFERENCES TableUserPermission(id) ON DELETE CASCADE ON UPDATE CASCADE');
-
-
+        $this->forge->createTable('TableUser');
     }
 
     public function down()
     {
-        $this->db->query('ALTER TABLE TableUser DROP FOREIGN KEY fk_id_permission');
-        $this->forge->dropTable('TableUserPermission');
+        $this->forge->dropTable('TableUser');
     }
 }
