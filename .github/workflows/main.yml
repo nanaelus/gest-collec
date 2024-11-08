@@ -19,7 +19,7 @@ jobs:
 
       - name: Modify .env
         run: |
-          sed -i 's/ENVIRONMENT = development/ENVIRONMENT = development/g' .env
+          sed -i 's/ENVIRONMENT = development/ENVIRONMENT = production/g' .env
           cat .env
 
       - name: Modify App.php
