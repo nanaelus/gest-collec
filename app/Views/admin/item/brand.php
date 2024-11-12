@@ -91,7 +91,7 @@
 <script>
     $(document).ready(function () {
         const modalBrand = new bootstrap.Modal('#modalBrand');
-        var baseUrl = <?= base_url(); ?>
+        var baseUrl = "<?= base_url(); ?>";
         var dataTable = $('#tableBrands').DataTable({
             "responsive": true,
             "processing": true,

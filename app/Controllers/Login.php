@@ -29,7 +29,7 @@ class Login extends BaseController
             $this->session->set('user', $user);
             $redirectUrl = $this->session->get('redirect_url') ?? '/';
             $this->session->remove('redirect_url');
-            return $this->redirect($redirectUrl);
+            $this->redirect($redirectUrl);
         } else {
             // Gérer l'échec de l'authentification
             return view('/login/login', ['error' => 'Identifiants incorrects']);
@@ -56,13 +56,13 @@ class Login extends BaseController
         if (!$um->createUser($data)) {
             $errors = $um->errors();
             $data = ['errors' => $errors];
-            return $this->redirect("/login/register", $data);
+            $this->redirect("/login/register", $data);
         }
-        return $this->redirect("/login");
+        $this->redirect("/login");
     }
 
     public function getlogout() {
         $this->logout();
-        return $this->redirect("/login");
+        $this->redirect("/login");
     }
 }

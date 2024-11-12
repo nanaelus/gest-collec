@@ -19,7 +19,7 @@
                     <input type="text" class="form-control" name="name">
                     <label class="form-label">Type parent</label>
                     <select class="form-select" name="id_type_parent">
-                        <option value="none" selected>Aucun</option>
+                        <option value="null" selected>Aucun</option>
                         <?php foreach ($all_types as $type) { ?>
                             <option value="<?= $type['id']; ?>">
                                 <?= $type['name']; ?>
@@ -61,6 +61,7 @@
         </div>
     </div>
 </div>
+
 <div class="modal" tabindex="-1" id="modalType">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -73,8 +74,9 @@
                     <input type="hidden" name="id" value="">
                     <label class="form-label">Nom du type</label>
                     <input type="text" name="name" class="form-control">
-                    <label class="form-label">Type parente</label>
+                    <label class="form-label">Type parent</label>
                     <select class="form-select" name="id_type_parent">
+                        <option value="none" selected>Aucun</option>
                         <?php foreach ($all_types as $type) { ?>
                             <option value="<?= $type['id']; ?>">
                                 <?= $type['name']; ?>
@@ -206,7 +208,7 @@
                     const ligne = $('#'+id_type).closest('tr');
                     //modification des differents champs
                     ligne.find('.slug-type').html(json.slug);
-                    ligne.find('.name-type').html(json.name);
+                    ligne.find('.name-type').text(json.name);
                     ligne.find('.id-type-parent').html(json.id_type_parent);
                     //fermeture de la modal
                     modalType.hide();

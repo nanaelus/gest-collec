@@ -114,7 +114,6 @@ class Item extends BaseController
                 }
             }
 
-
             $igim = model('ItemGenreItemModel');
             if ( !(count($genre_initial) == 1 && $genre_initial[0] == 1) || count($genre_a_ajouter) != 0 ) {
                 if (isset($genre_a_supprimer) && $genre_a_supprimer) {
@@ -284,6 +283,14 @@ class Item extends BaseController
         }
         $this->redirect('/admin/item/genre');
     }
+
+    public function postupdategenre() {
+        $data = $this->request->getPost();
+        $itm = Model('ItemGenreModel');
+        $itm->updateGenre($data['id'], $data);
+        return json_encode($itm->getGenreById($data['id']));
+    }
+
     public function gettotalitembygenre() {
         $id = $this->request->getGet("id");
         $igim = model('ItemGenreItemModel');
@@ -330,6 +337,7 @@ class Item extends BaseController
         $ibm->updateLicense($data['id'], $data);
         return json_encode($ibm->getLicenseById($data['id']));
     }
+
     public function postcreatelicense() {
         $data = $this->request->getPost();
         $ilm = Model('ItemLicenseModel');
