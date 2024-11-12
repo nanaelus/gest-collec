@@ -19,7 +19,7 @@
                     <input type="text" class="form-control" name="name">
                     <label class="form-label">Licence parente</label>
                     <select class="form-select" name="id_license_parent">
-                        <option value="none" selected>Aucun</option>
+                        <option value="null" selected>Aucun</option>
                         <?php foreach ($all_licenses as $license) { ?>
                             <option value="<?= $license['id']; ?>">
                                 <?= $license['name']; ?>
@@ -61,6 +61,7 @@
         </div>
     </div>
 </div>
+
 <div class="modal" tabindex="-1" id="modalLicense">
     <div class="modal-dialog">
         <div class="modal-content">

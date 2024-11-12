@@ -20,7 +20,7 @@ class MediaModel extends Model
         }
         return $this->find($id);
     }
-    public function deleteMedia($id) {
+    public function getDeleteMedia($id) {
         // Récupérer les informations du fichier depuis la base de données
         $fichier = $this->find($id);
         if ($fichier) {
