@@ -50,13 +50,17 @@ class ItemGenreModel extends Model
         return $this->where('slug',$slug)->first();
     }
     public function insertGenre($item) {
-        if(isset($item['id_genre_parent']) && empty($item['id_genre_parent'])) {
-            unset($item['id_genre_parent']);
-        }
         if (isset($item['name'])) {
             $item['slug'] = $this->generateUniqueSlug($item['name']);
         }
         return $this->insert($item);
+    }
+
+    public function updateGenre($id, $data) {
+        if (isset($data['name'])) {
+            $data['slug'] = $this->generateUniqueSlug($data['name'], $id);
+        }
+        return $this->update($id, $data);
     }
 
     private function generateUniqueSlug($name)
