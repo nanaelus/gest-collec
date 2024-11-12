@@ -12,7 +12,7 @@
         <form action="<?= base_url('admin/item/createbrand'); ?>" method="POST">
             <div class="card">
                 <div class="card-header">
-                    <h5>Ajouter un type</h5>
+                    <h5>Ajouter une marque</h5>
                 </div>
                 <div class="card-body">
                     <label class="form-label">Nom de la marque</label>
@@ -21,7 +21,9 @@
                     <select class="form-select" name="id_brand_parent">
                         <option value="none" selected>Aucun</option>
                         <?php foreach ($all_brands as $brand) { ?>
-                            <option value="<?= $brand['id'] ; ?>"><?= $brand['name']; ?></option>
+                            <option value="<?= $brand['id'] ; ?>">
+                                <?= $brand['name']; ?>
+                            </option>
                         <?php } ?>
                     </select>
                 </div>
@@ -74,8 +76,11 @@
                     <input type="text" name="name" class="form-control">
                     <label class="form-label">Type du parent</label>
                     <select class="form-select" name="id_brand_parent">
+                        <option value="none" selected>AucuneTrente</option>
                         <?php foreach ($all_brands as $brand) { ?>
-                            <option value="<?= $brand['id'] ; ?>"><?= $brand['name']; ?></option>
+                            <option value="<?= $brand['id']; ?>">
+                                <?= $brand['name']; ?>
+                            </option>
                         <?php } ?>
                     </select>
                 </div>
@@ -178,6 +183,9 @@
             let id_brand_parent = $(this).closest('tr').find('.id-brand-parent').html();
             $('.modal input[name="id"').val(id_brand);
             $('.modal input[name="name"').val(name);
+            if (id_brand_parent == "") {
+                id_brand_parent = "none";
+            }
             $('.modal select[name="id_brand_parent"').val(id_brand_parent);
         })
         $('#formModal').on('submit', function(event) {

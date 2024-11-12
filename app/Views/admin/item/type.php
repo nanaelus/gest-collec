@@ -9,7 +9,7 @@
 </div>
 <div class="row">
     <div class="col-md-4">
-        <form action="<?= base_url('/admin/item/createtype'); ?>" method="POST">
+        <form action="<?= base_url('admin/item/createtype'); ?>" method="POST">
             <div class="card">
                 <div class="card-header">
                     <h5>Ajouter un type</h5>
@@ -17,11 +17,11 @@
                 <div class="card-body">
                     <label class="form-label">Nom du type</label>
                     <input type="text" class="form-control" name="name">
-                    <label class="form-label">Type parent</label>
+                    <label class="form-label">Type du parent</label>
                     <select class="form-select" name="id_type_parent">
-                        <option value="null" selected>Aucun</option>
+                        <option value="none" selected>Aucun</option>
                         <?php foreach ($all_types as $type) { ?>
-                            <option value="<?= $type['id']; ?>">
+                            <option value="<?= $type['id'] ; ?>">
                                 <?= $type['name']; ?>
                             </option>
                         <?php } ?>
@@ -201,7 +201,6 @@
                     id_type_parent : id_type_parent,
                 },
                 success: function (data) {
-                    console.log(data);
                     //je transforme mon contenu pour l'utiliser en javascript
                     var json = JSON.parse(data);
                     //déclaration de ma ligne pour l'utiliser plusieurs fois

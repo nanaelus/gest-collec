@@ -50,8 +50,8 @@ class ItemTypeModel extends Model
         return $this->where('slug',$slug)->first();
     }
     public function insertType($item) {
-        if(isset($item['id_license_parent']) && (empty($item['id_license_parent']) || $item['id_license_parent'] == 'none')) {
-            unset($item['id_license_parent']);
+        if(isset($item['id_type_parent']) && (empty($item['id_type_parent']) || $item['id_type_parent'] == 'none')) {
+            unset($item['id_type_parent']);
         }
         if (isset($item['name'])) {
             $item['slug'] = $this->generateUniqueSlug($item['name']);

@@ -247,6 +247,7 @@ class Item extends BaseController
         }
         $this->redirect('/admin/item/brand');
     }
+
     public function postupdatebrand() {
         $data = $this->request->getPost();
         if ($data['id_brand_parent'] == "") {

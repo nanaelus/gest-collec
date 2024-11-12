@@ -50,7 +50,7 @@ class ItemLicenseModel extends Model
         return $this->where('slug',$slug)->first();
     }
     public function insertLicense($data) {
-        if(isset($data['id_license_parent']) && empty($data['id_license_parent'])) {
+        if(isset($data['id_license_parent']) && empty($data['id_license_parent']) || $data['id_license_parent'] == 'none')  {
             unset($data['id_license_parent']);
         }
         if (isset($data['name'])) {

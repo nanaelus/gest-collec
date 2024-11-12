@@ -19,7 +19,7 @@
                     <input type="text" class="form-control" name="name">
                     <label class="form-label">Licence parente</label>
                     <select class="form-select" name="id_license_parent">
-                        <option value="null" selected>Aucun</option>
+                        <option value="none" selected>Aucun</option>
                         <?php foreach ($all_licenses as $license) { ?>
                             <option value="<?= $license['id']; ?>">
                                 <?= $license['name']; ?>
