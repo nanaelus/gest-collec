@@ -4,7 +4,7 @@ namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
 
-class UserPermission extends BaseController
+class Userpermission extends BaseController
 {
     protected $require_auth = true;
     protected $requiredPermissions = ['administrateur'];
