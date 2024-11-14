@@ -67,7 +67,6 @@
                 <div class="clearfix">
                     <h1 class="float-start display-3 me-4">Dis-donc ! </h1>
                     <h4 class="pt-3">Vous n'avez pas le droit d'être ici. Oust !</h4>
-                    <h1>BARRE TOI J'T'AI DIT!!</h1>
                 </div>
                 <div class="input-group">
                     <a class="btn btn-secondary " href="javascript:history.back()">Retour à la page précédente</a>

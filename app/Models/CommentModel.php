@@ -113,7 +113,7 @@ class CommentModel extends Model
     {
         $builder = $this->builder();
 
-        $builder->select('comment.id, comment.id_user, comment.created_at, comment.id_comment_parent, SUBSTRING(comment.content, 1, 20) as content , u.username, i.name as item_name, i.id as id_item');
+        $builder->select('comment.id, comment.id_user, comment.created_at as date, comment.id_comment_parent, SUBSTRING(comment.content, 1, 20) as content , u.username, i.name as item_name, i.id as id_item');
         $builder->join('TableUser u', 'u.id = comment.id_user');
         $builder->join('item i', 'i.id = comment.entity_id');
         $builder->where('comment.entity_type', $entity_type);
@@ -151,7 +151,7 @@ class CommentModel extends Model
     public function getTotal($entity_type="item",$custom_filter = null,$custom_filter_value=null)
     {
         $builder = $this->builder();
-        $builder->select('comment.id, comment.id_user, comment.created_at, comment.id_comment_parent, SUBSTRING(comment.content, 1, 20) as content , u.username, i.name as item_name, i.id as id_item');
+        $builder->select('comment.id, comment.id_user, comment.created_at as date, comment.id_comment_parent, SUBSTRING(comment.content, 1, 20) as content , u.username, i.name as item_name, i.id as id_item');
         $builder->join('TableUser u', 'u.id = comment.id_user');
         $builder->join('item i', 'i.id = comment.entity_id');
         $builder->where('comment.entity_type', $entity_type);
@@ -171,7 +171,7 @@ class CommentModel extends Model
     public function getFiltered($searchValue, $entity_type="item",$custom_filter = null,$custom_filter_value=null)
     {
         $builder = $this->builder();
-        $builder->select('comment.id, comment.id_user, comment.created_at, comment.id_comment_parent, SUBSTRING(comment.content, 1, 20) as content , u.username, i.name as item_name, i.id as id_item');
+        $builder->select('comment.id, comment.id_user, comment.created_at as date, comment.id_comment_parent, SUBSTRING(comment.content, 1, 20) as content , u.username, i.name as item_name, i.id as id_item');
         $builder->join('TableUser u', 'u.id = comment.id_user');
         $builder->join('item i', 'i.id = comment.entity_id');
         $builder->where('comment.entity_type', $entity_type);
@@ -216,4 +216,8 @@ class CommentModel extends Model
         return $builder->countAllResults();
     }
 
+    public function getCommentsByUserId($id) {
+        $builder = $this->builder();
+        return $builder->where('id_user', $id);
+    }
 }

@@ -216,6 +216,33 @@ abstract class BaseController extends Controller
             . view($template_dir . 'footer', ['messages' => $this->messages]);
     }
 
+    public function knife($vue = null, $datas = [], $admin = false)
+    {
+        $connected = isset($this->session->user);
+        $template_dir = ($admin) ? "/templates/admin/" : "/templates/front/";
+
+        // Merge flashdata with existing $datas
+        $flashData = session()->getFlashdata('data');
+        if ($flashData) {
+            $datas = array_merge($datas, $flashData);
+        }
+        return view(
+                $template_dir . 'head',
+                [
+                    'template_dir' => $template_dir,
+                    'show_menu' => $connected,
+                    'mainmenu' => $this->mainmenu,
+                    'breadcrumb' => $this->breadcrumb,
+                    'localmenu' => $this->menu,
+                    'user' => ($this->session->user ?? null),
+                    'menus' => $this->menus($admin),
+                    'title' => sprintf('%s : %s', $this->title, $this->title_prefix)
+                ]
+            )
+            . (($vue !== null) ? view($vue, $datas) : '')
+            . view($template_dir . 'footer', ['messages' => $this->messages]);
+    }
+
     public function success($txt)
     {
         log_message('debug', $txt);
