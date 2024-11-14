@@ -56,7 +56,7 @@ class User extends BaseController
             if (is_array($uploadResult) && $uploadResult['status'] === 'error') {
                 // Afficher un message d'erreur détaillé et rediriger
                 $this->error("Une erreur est survenue lors de l'upload de l'image : " . $uploadResult['message']);
-                return $this->redirect("/admin/user");
+                $this->redirect("/admin/user");
             }
 
             // Si l'upload est un succès, suppression de l'ancien média
@@ -70,12 +70,14 @@ class User extends BaseController
             // Si la mise à jour réussit
             $this->success("L'utilisateur a bien été modifié.");
         } else {
-            // Si une erreur survient lors de la mise à jour
-            $this->error("Une erreur est survenue lors de la modification de l'utilisateur.");
+            $errors = $um->errors();
+            foreach ($errors as $error) {
+                $this->error($error);
+            }
         }
 
         // Redirection vers la page des utilisateurs après le traitement
-        return $this->redirect("/admin/user");
+        $this->redirect("/admin/user");
     }
 
 

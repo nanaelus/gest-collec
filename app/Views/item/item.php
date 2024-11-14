@@ -62,7 +62,7 @@
                                             <form action="<?= base_url('/comment/createitemcomment'); ?>" method="POST">
                                                 <input type="hidden" name="entity_id" value="<?= $item['id']; ?>">
                                                 <div class="form-floating">
-                                                    <textarea class="form-control" placeholder="Laissez un commentaire" id="floatingTextarea" name="content"></textarea>
+                                                    <textarea class="form-control" placeholder="Laissez un commentaire" id="floatingTextarea" name="content" required></textarea>
                                                     <label for="floatingTextarea">Commentaire</label>
                                                 </div>
                                                 <div class="d-flex justify-content-end mt-3">
