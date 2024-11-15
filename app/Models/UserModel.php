@@ -178,9 +178,6 @@ class UserModel extends Model
             $builder->orLike('email', $searchValue);
             $builder->orLike('TableUserPermission.name', $searchValue);
         }
-
         return $builder->countAllResults();
     }
-
-
 }

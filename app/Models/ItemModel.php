@@ -67,7 +67,6 @@ class ItemModel extends Model
 
         // Condition pour filtrer l'item par son slug
         $builder->where("i.slug", $slug);
-
         // Exécute la requête et récupère le premier résultat sous forme de tableau associatif
         $item = $builder->get()->getRowArray();
 
