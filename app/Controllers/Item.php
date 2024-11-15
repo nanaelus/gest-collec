@@ -20,7 +20,11 @@ class Item extends BaseController
             $licenses = model('ItemLicenseModel')->getAllLicenses();
             $brands = model('ItemBrandModel')->getAllBrands();
             $allitems = $im->getAllItemsFiltered($data,1, $perPage);
+            if($this->session->user) {
             $collectionUser = model('CollectionModel')->getAllCollectionByUsername($this->session->user->username);
+            } else {
+                $collectionUser = null;
+            }
             // Récupérer le pager pour générer les liens de pagination
             $pager = $im->pager;
             return $this->view('item/index', [

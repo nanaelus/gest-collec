@@ -36,7 +36,7 @@
                 } ?>
             </ul>
         </div>
-        <select id="search-item-head" class="form-control me-2 w-25" name="item"></select>
+        <select id="search-item-head" class="form-control me-2 w-25" name="item">LOL</select>
 
         <?php if (isset($user)) { ?>
             <div class="navbar-nav d-flex">

@@ -15,16 +15,18 @@ $controller = strtolower(basename(str_replace('\\', '/', $router->controllerName
                 <?php foreach(array_chunk($items, 4) as $chunk) : // Diviser les éléments en groupes de 4 ?>
                     <div class="row shelf-row px-4 ">
                         <?php foreach($chunk as $item) : ?>
-                            <div class="col-md-3 col-6">
+                            <div class="col-md-3 col-3">
                                 <div class="card h-100">
                                     <?php
                                     $img_src = !empty($item['default_img_file_path']) ? base_url($item['default_img_file_path']) : base_url('assets/img/full.jpg');
                                     ?>
-                                    <a href="<?= base_url('item/' . $item['slug']) ?>">
-                                        <img src="<?= $img_src; ?>" class="card-img-top" alt="...">
+                                    <a  href="<?= base_url('item/' . $item['slug']) ?>">
+                                        <img src="<?= $img_src; ?>" class="card-img-top" alt="..." style="height: 140.406px">
                                     </a>
-                                    <div class="card-body">
-                                        <div class="card-title"><?= $item['name']; ?></div>
+                                    <div class="card-body d-flex align-items-end justify-content-center">
+                                        <div class="card-title">
+                                            <?= $item['name']; ?>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
