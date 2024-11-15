@@ -40,7 +40,7 @@
             "columns": [
                 {"data": "id"},
                 {"data": "username"},
-                {"data": "entity_id"},
+                {"data": "id_item"},
                 {"data" : 'item_name'},
                 {"data" : 'content'},
                 {
@@ -55,11 +55,10 @@
                     sortable : false,
                     render : function(data, type, row) {
                         return (row.deleted_at === null ?
-                            `<a title="Désactiver le commentaire" href="<?= base_url('/admin/comment/desactivate/'); ?>${row.id}"><i class="fa-solid fa-xl fa-toggle-off text-success"></i></a>`: `<a title="Activer un commentaire" href="${baseUrl}/admin/comment/activate/${row.id}"><i class="fa-solid fa-toggle-on fa-xl text-danger"></i></a>`);
+                            `<a title="Désactiver le commentaire" href="<?= base_url('admin/comment/desactivate/'); ?>${row.id}"><i class="fa-solid fa-xl fa-toggle-off text-success"></i></a>`: `<a title="Activer un commentaire" href="${baseUrl}admin/comment/activate/${row.id}"><i class="fa-solid fa-toggle-on fa-xl text-danger"></i></a>`);
                     }
                 }
             ]
         });
     });
-
 </script>

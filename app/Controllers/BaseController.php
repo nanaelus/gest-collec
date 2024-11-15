@@ -127,8 +127,13 @@ abstract class BaseController extends Controller
     {
         if (!isset($this->session->user)) {
             if ($redirect) {
-                $this->session->set('redirect_url', current_url(true)->getPath()); // Save the current URL for redirection after login
-                return $this->redirect('/login');
+                $segments_url = current_url(true)->getSegments();
+                $redirect_url = "";
+                foreach($segments_url as $segment) {
+                    $redirect_url .= "/" . $segment;
+                }
+                $this->session->set('redirect_url', $redirect_url);
+                $this->redirect('/login');
             }
             return false;
         }
