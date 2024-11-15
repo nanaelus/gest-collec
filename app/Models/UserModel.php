@@ -88,16 +88,36 @@ class UserModel extends Model
     }
     public function updateUser($id, $data)
     {
-        $builder = $this->builder();
-        if (isset($data['password'])) {
-            if($data['password'] == '') {
-                unset($data['password']);
-            } else {
-                $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
+        // Récupérer les données actuelles de l'utilisateur
+        $currentData = $this->find($id);
+        if (!$currentData) {
+            throw new \Exception('Utilisateur introuvable.');
+        }
+
+        // Filtrer uniquement les champs qui ont changé
+        $dataToUpdate = [];
+        foreach ($data as $key => $value) {
+            if (isset($currentData[$key]) && $currentData[$key] != $value) {
+                if ($key === 'password' && $value !== '') {
+                    $dataToUpdate['password'] = password_hash($value, PASSWORD_DEFAULT);
+                } elseif ($key !== 'password') {
+                    $dataToUpdate[$key] = $value;
+                }
             }
         }
-        $builder->where('id', $id);
-        return $builder->update($data);
+
+        // Vérifier si aucun champ à mettre à jour
+        if (empty($dataToUpdate)) {
+            return false; // Rien à mettre à jour
+        }
+
+        // Supprimer l'id des données mises à jour si présent
+        if (isset($dataToUpdate['id'])) {
+            unset($dataToUpdate['id']);
+        }
+
+        // Effectuer la mise à jour
+        return $this->update($id, $dataToUpdate);
     }
     public function deleteUser($id)
     {
