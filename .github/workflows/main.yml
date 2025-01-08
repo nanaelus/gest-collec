@@ -90,7 +90,7 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: ${{ secrets.URL_PREFIX }}/
 
-      - name: Run Migration via API
+      - name: Run Migration via Api
         run: |
           curl -X GET "${{ secrets.BASE_URL }}/api/migration" \
           -H "Authorization: ${{ secrets.ENV_TOKEN }}"

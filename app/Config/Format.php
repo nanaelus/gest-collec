@@ -16,7 +16,7 @@ class Format extends BaseConfig
      *
      * When you perform content negotiation with the request, these are the
      * available formats that your application supports. This is currently
-     * only used with the API\ResponseTrait. A valid Formatter must exist
+     * only used with the Api\ResponseTrait. A valid Formatter must exist
      * for the specified format.
      *
      * These formats are only checked when the data passed to the respond()
