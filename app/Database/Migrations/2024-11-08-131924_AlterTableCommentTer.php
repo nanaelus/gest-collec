@@ -4,7 +4,7 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class AlterTableComment extends Migration
+class AlterTableCommentTer extends Migration
 {
     public function up()
     {

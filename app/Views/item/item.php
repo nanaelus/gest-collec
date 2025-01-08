@@ -118,6 +118,13 @@
                                 fa-lg"></i> Retirer
                                                     de ma collection</a>
                                             <?php endif; ?>
+                                            <form method="POST" action ="<?= base_url('cart/addproduct'); ?>">
+                                                <input name="quantity" type="hidden" value="1">
+                                                <input name="id" type="hidden" value="<?= $item['id']; ?>">
+                                                <input name="name" type="hidden" value="<?= $item['item_name']; ?>">
+                                                <input name="price" type="hidden" value="<?= $item['price']; ?>">
+                                                <button type="submit" class="btn btn-primary">Ajouter au panier</button>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
