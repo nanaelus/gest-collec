@@ -44,10 +44,11 @@ class Item extends ResourceController
             $im = model('ItemModel');
             $id_item = $im->insertItem($data);
             if($id_item) {
+                $item = $im->getItem($id_item);
                 return $this->response->setJSON([
                     'response' => 'L\'objet a été ajouté!',
                     'id_item' => $id_item,
-                    'data' =>$data,
+                    'item' =>$item,
                 ]);
             } else {
                 return $this->response->setJSON([
