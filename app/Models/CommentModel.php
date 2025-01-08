@@ -223,7 +223,8 @@ class CommentModel extends Model
     public function activateComment($id) {
         $builder = $this->builder();
         $builder->set('deleted_at', NULL);
-        return $builder->where('id', $id);
+        $builder->where('id', $id);
+        return $builder->update();
     }
 
     public function deleteComment($id) {
